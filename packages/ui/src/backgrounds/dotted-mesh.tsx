@@ -17,17 +17,33 @@ const DOT_COLOR = {
   'dots-dark': 'rgba(15, 17, 18, 0.08)',
 } as const;
 
+/** Drift durations. `normal` is the subtle brand default. */
+const SPEED_DURATION = {
+  slow: '22s',
+  normal: undefined, // use the token default baked into animate-mesh-wave (14s)
+  fast: '7s',
+} as const;
+
 export interface DottedMeshProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Dot colour: light dots on dark (default) or dark dots on light. */
   variant?: keyof typeof DOT_COLOR;
   /** Disable the drift animation (static grid). */
   animated?: boolean;
+  /** Drift speed. `normal` (14s) is the subtle brand default. */
+  speed?: keyof typeof SPEED_DURATION;
+  /** Dot grid pitch in px (larger = sparser). Default 28. */
+  gap?: number;
   children?: React.ReactNode;
 }
 
 export const DottedMesh = React.forwardRef<HTMLDivElement, DottedMeshProps>(
-  ({ variant = 'dots-light', animated = true, className, children, ...props }, ref) => {
+  (
+    { variant = 'dots-light', animated = true, speed = 'normal', gap = 28, className, children, ...props },
+    ref,
+  ) => {
     const color = DOT_COLOR[variant];
+    const duration = SPEED_DURATION[speed];
+    const half = gap / 2;
     return (
       <div ref={ref} className={cn('relative overflow-hidden', className)} {...props}>
         <div
@@ -38,8 +54,9 @@ export const DottedMesh = React.forwardRef<HTMLDivElement, DottedMeshProps>(
           )}
           style={{
             backgroundImage: `radial-gradient(circle, ${color} 1px, transparent 1.5px), radial-gradient(circle, ${color} 1px, transparent 1.5px)`,
-            backgroundSize: '28px 28px, 28px 28px',
-            backgroundPosition: '0 0, 14px 14px',
+            backgroundSize: `${gap}px ${gap}px, ${gap}px ${gap}px`,
+            backgroundPosition: `0 0, ${half}px ${half}px`,
+            ...(duration ? { animationDuration: duration } : null),
           }}
         />
         {children != null && <div className="relative z-[1]">{children}</div>}

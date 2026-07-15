@@ -44,6 +44,8 @@ export interface Demo {
   code: string;
   /** Preview canvas tone. Byte is dark-first, so default is dark. */
   tone?: 'dark' | 'light';
+  /** Fill the preview panel edge-to-edge (no padding). */
+  flush?: boolean;
 }
 
 export interface DocEntry {
@@ -613,56 +615,78 @@ const dottedMesh: DocEntry = {
   importLine: "import { DottedMesh } from '@bytenana/ui';",
   demos: [
     {
-      title: 'Light dots on dark',
-      description: 'The default — light dots for dark surfaces.',
+      title: 'Live background',
+      description:
+        'Full-bleed and animated (speed="fast" here so the drift reads clearly). The normal speed on the site is a subtle 14s. Motion pauses if your OS has Reduce Motion on.',
+      flush: true,
       render: () => (
-        <DottedMesh className="flex min-h-[220px] w-full max-w-xl items-center justify-center rounded-lg border border-border bg-bg p-10">
-          <div className="text-center">
+        <DottedMesh speed="fast" className="flex h-[460px] w-full items-center justify-center bg-bg">
+          <div className="flex flex-col items-center gap-4 text-center">
             <Eyebrow>Backgrounds</Eyebrow>
-            <Heading level={3}>Drifting dot mesh</Heading>
-            <Text variant="muted">Content sits above the animated grid.</Text>
+            <Heading level={2}>Drifting dot mesh</Heading>
+            <Text variant="muted" size="lg">
+              An animated grid behind your content.
+            </Text>
+            <div className="flex gap-3 pt-1">
+              <Button>Book a call</Button>
+              <Button variant="secondary">See how we work</Button>
+            </div>
           </div>
         </DottedMesh>
       ),
-      code: `<DottedMesh className="rounded-lg bg-bg p-10">
-  <Heading level={3}>Drifting dot mesh</Heading>
-  <Text variant="muted">Content sits above the animated grid.</Text>
+      code: `<DottedMesh speed="fast" className="h-[460px] bg-bg">
+  <Eyebrow>Backgrounds</Eyebrow>
+  <Heading level={2}>Drifting dot mesh</Heading>
+  <Text variant="muted" size="lg">An animated grid behind your content.</Text>
 </DottedMesh>`,
+    },
+    {
+      title: 'Normal (subtle) speed',
+      description: 'The brand default — a slow 14s drift used behind real sections.',
+      flush: true,
+      render: () => (
+        <DottedMesh className="flex h-[260px] w-full items-center justify-center bg-bg">
+          <Text variant="muted">Subtle 14s drift (default).</Text>
+        </DottedMesh>
+      ),
+      code: `<DottedMesh className="bg-bg">…</DottedMesh>`,
     },
     {
       title: 'Dark dots on light',
       description: 'variant="dots-dark" for off-white bands (e.g. the winning price card).',
       tone: 'light',
+      flush: true,
       render: () => (
         <DottedMesh
           variant="dots-dark"
-          className="flex min-h-[220px] w-full max-w-xl items-center justify-center rounded-lg border border-on-light-border bg-light p-10"
+          className="flex h-[260px] w-full items-center justify-center bg-light"
         >
           <div className="text-center">
             <p className="font-heading text-xs font-semibold uppercase tracking-[0.15em] text-primary">
               ByteNana senior
             </p>
-            <p className="font-heading text-4xl font-extrabold text-on-light">~$100k/yr</p>
+            <p className="font-heading text-5xl font-extrabold text-on-light">~$100k/yr</p>
             <p className="text-sm text-on-light-muted">architect-reviewed</p>
           </div>
         </DottedMesh>
       ),
-      code: `<DottedMesh variant="dots-dark" className="rounded-lg bg-light p-10">
+      code: `<DottedMesh variant="dots-dark" className="bg-light">
   {/* the highlighted "win" card content */}
 </DottedMesh>`,
     },
     {
       title: 'Static (no animation)',
       description: 'Pass animated={false} for a still grid.',
+      flush: true,
       render: () => (
         <DottedMesh
           animated={false}
-          className="flex min-h-[160px] w-full max-w-xl items-center justify-center rounded-lg border border-border bg-bg p-10"
+          className="flex h-[200px] w-full items-center justify-center bg-bg"
         >
           <Text variant="muted">Static dot grid.</Text>
         </DottedMesh>
       ),
-      code: `<DottedMesh animated={false} className="rounded-lg bg-bg p-10">…</DottedMesh>`,
+      code: `<DottedMesh animated={false} className="bg-bg">…</DottedMesh>`,
     },
   ],
 };

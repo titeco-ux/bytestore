@@ -39,11 +39,11 @@ export function DemoBlock({ demo }: { demo: Demo }) {
           ))}
         </div>
 
-        {/* Panel */}
+        {/* Panel — `flush` demos fill the panel edge-to-edge (no padding). */}
         {tab === 'preview' ? (
           <div
             className={
-              'flex min-h-[180px] items-center justify-center p-8 ' +
+              (demo.flush ? 'flex ' : 'flex min-h-[180px] items-center justify-center p-8 ') +
               (tone === 'dark' ? 'bg-bg' : 'bg-light')
             }
           >
