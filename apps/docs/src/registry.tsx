@@ -829,7 +829,7 @@ const icosahedron: DocEntry = {
   drawer: 'Backgrounds',
   status: 'new',
   description:
-    "The hero's tumbling wireframe polyhedron (canvas): vertices / faces spun on a yaw + tilt, silhouette edges solid with a glow, interior edges dashed, front faces tinted. Switch the face count (4 tetra / 8 octa / 20 icosa), and nest anything as children — text or a flat SVG icon — pinned at the centre (the hero puts the logo there). Controls cover size, opacity, edge thickness, radius, spin speed, and what's inside.",
+    "The hero's tumbling wireframe polyhedron (canvas): vertices / faces spun on a yaw + tilt, silhouette edges solid with a glow, interior edges dashed, front faces tinted. Switch the face count (4 tetra / 8 octa / 20 icosa / 80 geodesic), and nest anything as children — text or a flat SVG icon — pinned at the centre (the hero puts the logo there). Controls cover size, opacity, edge thickness, radius, spin speed, and what's inside.",
   importLine: "import { Icosahedron } from '@bytenana/ui';",
   demos: [
     {

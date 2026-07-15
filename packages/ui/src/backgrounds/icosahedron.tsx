@@ -26,11 +26,11 @@ interface Geometry {
   E: Edge[];
 }
 
-/** Triangular-faced Platonic solids we can render. Key = face count. */
-export const FACE_COUNTS = [4, 8, 20] as const;
+/** Triangular-faced shapes we can render (80 = geodesic subdivision of 20). */
+export const FACE_COUNTS = [4, 8, 20, 80] as const;
 export type FaceCount = (typeof FACE_COUNTS)[number];
 
-const SOLIDS: Record<FaceCount, { V: number[][]; F: number[][] }> = {
+const SOLIDS: Record<4 | 8 | 20, { V: number[][]; F: number[][] }> = {
   // Tetrahedron
   4: {
     V: [[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]],
@@ -57,14 +57,52 @@ const SOLIDS: Record<FaceCount, { V: number[][]; F: number[][] }> = {
   },
 };
 
+function normalize(v: number[]): number[] {
+  const n = Math.hypot(v[0], v[1], v[2]) || 1;
+  return [v[0] / n, v[1] / n, v[2] / n];
+}
+
+/** Subdivide each triangle into 4 (midpoints projected to the sphere) → geodesic. */
+function subdivide(V0: number[][], F0: number[][]): { V: number[][]; F: number[][] } {
+  const V = V0.map((v) => v.slice());
+  const mid = new Map<string, number>();
+  const midpoint = (i: number, j: number): number => {
+    const key = i < j ? `${i}_${j}` : `${j}_${i}`;
+    const cached = mid.get(key);
+    if (cached !== undefined) return cached;
+    const m = normalize([
+      (V[i][0] + V[j][0]) / 2,
+      (V[i][1] + V[j][1]) / 2,
+      (V[i][2] + V[j][2]) / 2,
+    ]);
+    const idx = V.push(m) - 1;
+    mid.set(key, idx);
+    return idx;
+  };
+  const F: number[][] = [];
+  F0.forEach(([a, b, c]) => {
+    const ab = midpoint(a, b);
+    const bc = midpoint(b, c);
+    const ca = midpoint(c, a);
+    F.push([a, ab, ca], [ab, b, bc], [ca, bc, c], [ab, bc, ca]);
+  });
+  return { V, F };
+}
+
 /** Normalise vertices to the unit sphere, fix face winding outward, build edges. */
 function buildGeometry(faces: FaceCount): Geometry {
-  const src = SOLIDS[faces] ?? SOLIDS[20];
-  const V = src.V.map((v) => {
-    const n = Math.hypot(v[0], v[1], v[2]);
-    return [v[0] / n, v[1] / n, v[2] / n];
-  });
-  const F = src.F.map((f) => {
+  let baseV: number[][];
+  let baseF: number[][];
+  if (faces === 80) {
+    const ico = SOLIDS[20];
+    ({ V: baseV, F: baseF } = subdivide(ico.V.map(normalize), ico.F));
+  } else {
+    const src = SOLIDS[faces] ?? SOLIDS[20];
+    baseV = src.V.map(normalize);
+    baseF = src.F;
+  }
+  const V = baseV;
+  const F = baseF.map((f) => {
     const a = V[f[0]], b = V[f[1]], c = V[f[2]];
     const ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2];
     const vx = c[0] - a[0], vy = c[1] - a[1], vz = c[2] - a[2];

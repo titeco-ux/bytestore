@@ -48,7 +48,7 @@ export function IcosahedronPlayground() {
     <div className="w-full">
       <div className="flex min-h-[420px] items-center justify-center overflow-hidden bg-bg p-8">
         <Icosahedron
-          faces={faces as 4 | 8 | 20}
+          faces={faces as 4 | 8 | 20 | 80}
           size={size}
           opacity={opacity}
           thickness={thickness}
@@ -68,7 +68,7 @@ export function IcosahedronPlayground() {
         <Segmented
           label="Faces"
           value={String(faces)}
-          options={['4', '8', '20']}
+          options={['4', '8', '20', '80']}
           onChange={(v) => setFaces(Number(v))}
         />
         <Slider label="Size" value={size} min={200} max={480} step={4} unit="px" onChange={setSize} />
