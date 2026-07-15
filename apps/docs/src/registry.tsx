@@ -7,7 +7,6 @@ import {
   CardIcon,
   CardTitle,
   CardDescription,
-  CardFooter,
   Carousel,
   Container,
   DottedMesh,
@@ -22,7 +21,6 @@ import {
   Section,
   SectionLabel,
   Separator,
-  TechCard,
   Text,
   Textarea,
   Timeline,
@@ -487,7 +485,7 @@ const card: DocEntry = {
   category: 'Molecules',
   status: 'new',
   description:
-    'A surface composed of CardIcon + CardTitle + CardDescription (+ CardContent / CardFooter). Variants: default, invert (the signature invert-on-hover), lift, and quote. Hover the invert card to see it flip to solid yellow.',
+    'A surface composed of CardIcon + CardTitle + CardDescription (+ CardContent / CardFooter). Variants: default, invert (the signature invert-on-hover), and lift. Hover the invert card to see it flip to solid yellow.',
   importLine:
     "import { Card, CardIcon, CardTitle, CardDescription, CardFooter, Icon } from '@bytenana/ui';",
   demos: [
@@ -526,24 +524,6 @@ const card: DocEntry = {
   <CardIcon><Icon icon="mdi:rocket-launch-outline" /></CardIcon>
   <CardTitle>Ship faster</CardTitle>
   <CardDescription>Senior, architect-reviewed delivery.</CardDescription>
-</Card>`,
-    },
-    {
-      title: 'Quote',
-      description: 'Testimonial card — left yellow border, italic body, attribution footer.',
-      render: () => (
-        <Card variant="quote" className="max-w-lg">
-          <p className="font-body text-lg italic leading-relaxed text-foreground">
-            “We were impressed with their flexibility and skills.”
-          </p>
-          <CardFooter className="mt-0">CEO · Series-A startup, US</CardFooter>
-        </Card>
-      ),
-      code: `<Card variant="quote">
-  <p className="text-lg italic leading-relaxed text-foreground">
-    “We were impressed with their flexibility and skills.”
-  </p>
-  <CardFooter className="mt-0">CEO · Series-A startup, US</CardFooter>
 </Card>`,
     },
   ],
@@ -735,34 +715,21 @@ const timeline: DocEntry = {
   ],
 };
 
-const TECH_SLIDES = [
+const CAROUSEL_SLIDES = [
   {
-    icon: 'mdi:brain',
-    title: 'AI',
-    description:
-      'Production-grade AI — RAG pipelines, LLM agents, and automation on our own spec-driven framework.',
-    tags: ['OpenAI / GPT-4', 'LangChain', 'RAG', 'Pinecone', 'n8n'],
-    nodes: [
-      'simple-icons:openai',
-      'simple-icons:langchain',
-      'mdi:database-search',
-      'mdi:cube-outline',
-      'simple-icons:n8n',
-    ],
+    icon: 'mdi:account-group-outline',
+    title: 'In your stack',
+    description: 'Engineers who slot into your tools and ship from week one.',
   },
   {
-    icon: 'mdi:application-brackets-outline',
-    title: 'Frontend',
-    description: 'Fast, accessible interfaces — reactive UIs that scale cleanly from MVP to enterprise.',
-    tags: ['React', 'Next.js', 'JavaScript', 'TypeScript'],
-    nodes: ['simple-icons:react', 'simple-icons:nextdotjs', 'simple-icons:javascript', 'simple-icons:typescript'],
+    icon: 'mdi:rocket-launch-outline',
+    title: 'Ship faster',
+    description: 'Senior, architect-reviewed delivery — MVP to enterprise.',
   },
   {
-    icon: 'mdi:server-outline',
-    title: 'Backend',
-    description: 'Robust, secure APIs and services engineered for high load and rock-solid reliability.',
-    tags: ['Node.js', 'Java / Spring', 'Express'],
-    nodes: ['simple-icons:nodedotjs', 'simple-icons:spring', 'simple-icons:express'],
+    icon: 'mdi:clock-outline',
+    title: 'Full US overlap',
+    description: 'Real-time collaboration across US working hours.',
   },
 ];
 
@@ -772,37 +739,34 @@ const carousel: DocEntry = {
   category: 'Molecules',
   status: 'new',
   description:
-    "One slide at a time with dot navigation, prev/next arrows, auto-advance (pauses on hover/focus), swipe and keyboard arrows. Here it holds the site's TechCard slides — a tech-stack category with a floating molecular hub. Auto-advance and the slide transition respect reduced-motion.",
-  importLine: "import { Carousel, TechCard } from '@bytenana/ui';",
+    'One slide at a time with dot navigation, prev/next arrows, auto-advance (pauses on hover/focus), swipe and keyboard arrows. Each child is a slide — here, plain Card molecules. Auto-advance and the slide transition respect reduced-motion.',
+  importLine: "import { Carousel, Card, CardIcon, CardTitle, CardDescription, Icon } from '@bytenana/ui';",
   demos: [
     {
-      title: 'Tech-stack carousel',
-      description:
-        'The bytenana.tech carousel. It auto-advances; hover to pause, or use the arrows / dots / swipe.',
+      title: 'A card carousel',
+      description: 'It auto-advances; hover to pause, or use the arrows / dots / swipe.',
       render: () => (
-        <Carousel className="w-full max-w-2xl" aria-label="Tech stack">
-          {TECH_SLIDES.map((s) => (
+        <Carousel className="w-full max-w-lg" aria-label="Highlights">
+          {CAROUSEL_SLIDES.map((s) => (
             <div key={s.title} className="px-1 pb-2">
-              <TechCard
-                icon={s.icon}
-                title={s.title}
-                description={s.description}
-                tags={s.tags}
-                nodes={s.nodes}
-              />
+              <Card>
+                <CardIcon>
+                  <Icon icon={s.icon} />
+                </CardIcon>
+                <CardTitle>{s.title}</CardTitle>
+                <CardDescription>{s.description}</CardDescription>
+              </Card>
             </div>
           ))}
         </Carousel>
       ),
-      code: `<Carousel aria-label="Tech stack">
-  <TechCard
-    icon="mdi:brain"
-    title="AI"
-    description="Production-grade AI — RAG pipelines, LLM agents, and automation."
-    tags={['OpenAI / GPT-4', 'LangChain', 'RAG', 'n8n']}
-    nodes={['simple-icons:openai', 'simple-icons:langchain', 'mdi:database-search', 'simple-icons:n8n']}
-  />
-  {/* …more category slides */}
+      code: `<Carousel aria-label="Highlights">
+  <Card>
+    <CardIcon><Icon icon="mdi:account-group-outline" /></CardIcon>
+    <CardTitle>In your stack</CardTitle>
+    <CardDescription>Engineers who slot into your tools.</CardDescription>
+  </Card>
+  {/* …more slides */}
 </Carousel>`,
     },
   ],

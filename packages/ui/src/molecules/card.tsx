@@ -8,7 +8,6 @@ import { cn } from '../lib/cn';
      default = surface card, border turns yellow on hover
      invert  = SIGNATURE — flips to solid yellow with dark content + lift
      lift    = border + translateY on hover
-     quote   = left yellow border, italic body (testimonials)
 
    The invert variant tags itself `group/invert`; the subcomponents below use
    `group-hover/invert:*` so their color flips only inside an invert card.
@@ -21,8 +20,6 @@ const cardVariants = cva('rounded-lg border transition-colors duration-fast ease
       invert:
         'group/invert border-border bg-surface p-8 transition-all duration-base hover:-translate-y-1 hover:border-primary hover:bg-primary hover:shadow-md',
       lift: 'border-border bg-surface px-8 py-6 transition-[border-color,transform] hover:-translate-y-1 hover:border-border-hover',
-      quote:
-        'flex flex-col gap-4 border-border border-l-[3px] border-l-primary bg-surface px-8 py-6',
     },
   },
   defaultVariants: {
