@@ -19,22 +19,29 @@ export function ComponentPage({ entry }: { entry: DocEntry }) {
         </p>
       </header>
 
-      {/* Import */}
-      {entry.importLine && (
-        <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-on-light-dim">
-            Import
-          </p>
-          <CodeBlock code={entry.importLine} language="tsx" />
-        </div>
-      )}
+      {/* Long-form documentation body (takes over the page when present) */}
+      {entry.body ? (
+        <div className="flex flex-col gap-6">{entry.body()}</div>
+      ) : (
+        <>
+          {/* Import */}
+          {entry.importLine && (
+            <div className="flex flex-col gap-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-on-light-dim">
+                Import
+              </p>
+              <CodeBlock code={entry.importLine} language="tsx" />
+            </div>
+          )}
 
-      {/* Demos */}
-      <div className="flex flex-col gap-10">
-        {entry.demos.map((demo) => (
-          <DemoBlock key={demo.title} demo={demo} />
-        ))}
-      </div>
+          {/* Demos */}
+          <div className="flex flex-col gap-10">
+            {entry.demos.map((demo) => (
+              <DemoBlock key={demo.title} demo={demo} />
+            ))}
+          </div>
+        </>
+      )}
     </article>
   );
 }

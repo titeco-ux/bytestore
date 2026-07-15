@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { IcosahedronPlayground } from './playgrounds/IcosahedronPlayground';
 import { DottedMeshPlayground } from './playgrounds/DottedMeshPlayground';
+import { CodeBlock } from './components/CodeBlock';
 import {
   Badge,
   Button,
@@ -34,7 +35,7 @@ import {
    ========================================================================== */
 
 /** Top-level collapsible groups in the sidebar. */
-export type Drawer = 'Design System' | 'Backgrounds';
+export type Drawer = 'Components' | 'Backgrounds';
 
 export type Category =
   | 'Getting started'
@@ -63,9 +64,137 @@ export interface DocEntry {
   description: string;
   importLine?: string;
   demos: Demo[];
+  /** Long-form documentation body (rendered instead of demos). */
+  body?: () => React.ReactNode;
 }
 
 /* ========================================================== Getting started */
+
+/* ------------------------------------------------------- doc prose helpers */
+
+function DocH2(props: React.HTMLAttributes<HTMLHeadingElement>) {
+  return <h2 className="mt-4 font-heading text-2xl font-bold text-on-light" {...props} />;
+}
+function DocP(props: React.HTMLAttributes<HTMLParagraphElement>) {
+  return <p className="max-w-2xl leading-relaxed text-on-light-muted" {...props} />;
+}
+function DocCode({ children }: { children: React.ReactNode }) {
+  return (
+    <code className="rounded bg-black/[0.06] px-1.5 py-0.5 font-mono text-[0.85em] text-on-light">
+      {children}
+    </code>
+  );
+}
+
+const gettingStarted: DocEntry = {
+  slug: 'getting-started',
+  name: 'Getting Started',
+  category: 'Getting started',
+  description:
+    'How to use the ByteNana design system in a React app — install the packages, wire up the Tailwind preset and fonts, then compose components.',
+  demos: [],
+  body: () => (
+    <>
+      <DocH2>1. Install</DocH2>
+      <DocP>
+        Bytestore is an npm-workspaces monorepo. Apps consume two packages:{' '}
+        <DocCode>@bytenana/tokens</DocCode> (design tokens — the single source of truth) and{' '}
+        <DocCode>@bytenana/ui</DocCode> (the React components). From the repo root:
+      </DocP>
+      <CodeBlock language="bash" code={`npm install\nnpm run dev   # docs site on http://localhost:5173`} />
+
+      <DocH2>2. Add the Tailwind preset</DocH2>
+      <DocP>
+        The whole palette, type scale, spacing, radii and motion are exposed as a Tailwind preset,
+        so utilities like <DocCode>bg-primary</DocCode>, <DocCode>text-muted</DocCode>,{' '}
+        <DocCode>rounded-lg</DocCode> and <DocCode>ease-byte</DocCode> resolve to Byte values.
+      </DocP>
+      <CodeBlock
+        language="javascript"
+        code={`// tailwind.config.cjs
+const bytePreset = require('@bytenana/tokens/tailwind-preset');
+
+module.exports = {
+  presets: [bytePreset],
+  content: [
+    './src/**/*.{ts,tsx}',
+    './node_modules/@bytenana/ui/src/**/*.{ts,tsx}',
+  ],
+};`}
+      />
+
+      <DocH2>3. Load the fonts + icons</DocH2>
+      <DocP>
+        Headings use IBM Plex Sans, body uses Inter. The <DocCode>Icon</DocCode> component renders
+        Iconify's web component, so load its script once.
+      </DocP>
+      <CodeBlock
+        language="html"
+        code={`<link
+  href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+  rel="stylesheet" />
+<script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>`}
+      />
+
+      <DocH2>4. Use a component</DocH2>
+      <DocP>Import from the barrel and compose. Everything is dark-first.</DocP>
+      <CodeBlock
+        code={`import { Section, Container, Eyebrow, Heading, Text, Button } from '@bytenana/ui';
+
+export function Hero() {
+  return (
+    <Section tone="dark">
+      <Container className="text-center">
+        <Eyebrow>ByteNana</Eyebrow>
+        <Heading level={1}>Ship with a senior team</Heading>
+        <Text variant="muted" size="lg">Senior US calibre. Half the cost.</Text>
+        <Button>Book a call</Button>
+      </Container>
+    </Section>
+  );
+}`}
+      />
+
+      <DocH2>5. The section rhythm</DocH2>
+      <DocP>
+        Alternate <DocCode>Section</DocCode> tones: a dark base, off-white bands, and exactly one
+        yellow <DocCode>brand</DocCode> interrupt per page.
+      </DocP>
+      <CodeBlock
+        code={`<Section tone="dark">…</Section>
+<Section tone="light">…</Section>
+<Section tone="brand">…</Section>   {/* one per page */}`}
+      />
+
+      <DocH2>6. Backgrounds</DocH2>
+      <DocP>Wrap content in a background motif — the drifting mesh or the tumbling icosahedron.</DocP>
+      <CodeBlock
+        code={`import { DottedMesh, Icosahedron } from '@bytenana/ui';
+
+<DottedMesh className="bg-bg p-24">
+  <YourSection />
+</DottedMesh>`}
+      />
+
+      <DocH2>7. Add your own component</DocH2>
+      <DocP>
+        Three steps: create the atom/molecule in <DocCode>packages/ui/src</DocCode>, export it from{' '}
+        <DocCode>src/index.ts</DocCode>, then add an entry to{' '}
+        <DocCode>apps/docs/src/registry.tsx</DocCode> so it appears in this sidebar with a live
+        preview and code.
+      </DocP>
+
+      <DocH2>Design principles</DocH2>
+      <DocP>
+        Dark-first (<DocCode>#0F1112</DocCode>). One brand yellow (<DocCode>#F2B705</DocCode>) used
+        surgically — never as body text on dark. 8-pt spacing grid. 8px radius on controls, 16px on
+        cards. The signature spring ease is <DocCode>cubic-bezier(0.22, 1, 0.36, 1)</DocCode>. Every
+        animation respects <DocCode>prefers-reduced-motion</DocCode>. To re-skin the whole system,
+        edit <DocCode>@bytenana/tokens</DocCode> only.
+      </DocP>
+    </>
+  ),
+};
 
 const overview: DocEntry = {
   slug: 'overview',
@@ -825,8 +954,9 @@ const icosahedron: DocEntry = {
 /* ------------------------------------------------------------------ Assembly */
 
 export const registry: DocEntry[] = [
-  // Design System
+  // Components
   overview,
+  gettingStarted,
   typography,
   badge,
   button,
@@ -847,7 +977,7 @@ export const registry: DocEntry[] = [
 ];
 
 /** Sidebar drawer order. */
-export const drawerOrder: Drawer[] = ['Design System', 'Backgrounds'];
+export const drawerOrder: Drawer[] = ['Components', 'Backgrounds'];
 
 /** Category order within a drawer. */
 export const categoryOrder: Category[] = [
@@ -857,9 +987,9 @@ export const categoryOrder: Category[] = [
   'Patterns',
 ];
 
-/** A missing drawer means the entry belongs to the Design System. */
+/** A missing drawer means the entry belongs to Components. */
 export function drawerOf(entry: DocEntry): Drawer {
-  return entry.drawer ?? 'Design System';
+  return entry.drawer ?? 'Components';
 }
 
 export function findEntry(slug: string): DocEntry | undefined {

@@ -62,8 +62,10 @@ export function Sidebar({ activeSlug, onNavigate }: SidebarProps) {
               key={drawer}
               className={
                 'flex flex-col rounded-lg ' +
-                // The components drawer gets a subtle panel background to set it apart.
-                (drawer === 'Design System' ? 'bg-black/[0.04] p-1.5' : '')
+                // The Components drawer sits on a distinct panel to set it apart.
+                (drawer === 'Components'
+                  ? 'border border-on-light-border bg-black/[0.05] p-2'
+                  : '')
               }
             >
               <DrawerHeader
