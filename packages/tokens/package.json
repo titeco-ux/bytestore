@@ -1,0 +1,22 @@
+{
+  "name": "@bytenana/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "description": "ByteNana design tokens — single source of truth (JS object, Tailwind preset, CSS variables).",
+  "main": "tokens.cjs",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./tokens.cjs"
+    },
+    "./tailwind-preset": "./tailwind-preset.cjs",
+    "./tokens.css": "./tokens.css"
+  },
+  "files": [
+    "tokens.cjs",
+    "tailwind-preset.cjs",
+    "tokens.css",
+    "index.d.ts"
+  ]
+}

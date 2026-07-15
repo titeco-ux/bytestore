@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Docs chrome is LIGHT (the component previews render dark, since the Byte
+   system is dark-first). Brand yellow carries the accents. */
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-light text-on-light font-body antialiased;
+  }
+  ::selection {
+    background: var(--color-primary, #f2b705);
+    color: #0f1112;
+  }
+}
+
+/* Thin, quiet scrollbars to match the minimal chrome. */
+@layer utilities {
+  .scroll-quiet {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(15, 17, 18, 0.2) transparent;
+  }
+  .scroll-quiet::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scroll-quiet::-webkit-scrollbar-thumb {
+    background: rgba(15, 17, 18, 0.18);
+    border-radius: 8px;
+  }
+}

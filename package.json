@@ -1,0 +1,16 @@
+{
+  "name": "bytestore",
+  "version": "0.0.0",
+  "private": true,
+  "description": "ByteNana design system — React component library (web-first, shadcn model) + docs site.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w bytestore-docs",
+    "build": "npm run build -w bytestore-docs",
+    "preview": "npm run preview -w bytestore-docs"
+  },
+  "license": "UNLICENSED"
+}

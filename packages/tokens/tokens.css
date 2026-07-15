@@ -1,0 +1,76 @@
+/* ==========================================================================
+   ByteNana Design System — DESIGN TOKENS (CSS custom properties)
+   Framework-neutral mirror of tokens.cjs. Import this if you are NOT using
+   the Tailwind preset (e.g. plain CSS, or to expose vars to consumers).
+   ========================================================================== */
+:root {
+  /* --- Brand color -------------------------------------------------------- */
+  --color-primary:       #F2B705;
+  --color-primary-dark:  #D4A004;
+  --color-primary-light: #F5C84A;
+  --color-primary-glow:  rgba(242, 183, 5, 0.15);
+
+  /* --- Backgrounds (dark, layered) --------------------------------------- */
+  --color-bg:        #0F1112;
+  --color-surface:   #161A1C;
+  --color-surface-2: #1E2325;
+  --color-surface-3: #252A2D;
+  --color-light:     #FCFCFC;
+
+  /* --- Text --------------------------------------------------------------- */
+  --color-text:       #FCFCFC;
+  --color-text-muted: rgba(252, 252, 252, 0.55);
+  --color-text-dim:   rgba(252, 252, 252, 0.35);
+
+  /* --- Borders ------------------------------------------------------------ */
+  --color-border:       rgba(252, 252, 252, 0.08);
+  --color-border-hover: rgba(242, 183, 5, 0.35);
+
+  /* --- On-light equivalents ---------------------------------------------- */
+  --on-light-text:   #0F1112;
+  --on-light-muted:  rgba(15, 17, 18, 0.65);
+  --on-light-dim:    rgba(15, 17, 18, 0.35);
+  --on-light-border: rgba(15, 17, 18, 0.10);
+
+  /* --- Typography --------------------------------------------------------- */
+  --font-heading: 'IBM Plex Sans', sans-serif;
+  --font-body:    'Inter', sans-serif;
+
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+  --text-4xl:  2.25rem;
+  --text-5xl:  3rem;
+  --text-6xl:  3.75rem;
+
+  /* --- Spacing — 8pt grid ------------------------------------------------- */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* --- Radius / shadow / motion ------------------------------------------ */
+  --radius-sm: 4px;
+  --radius:    8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --shadow-sm:      0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md:      0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg:      0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-primary: 0 4px 24px rgba(242, 183, 5, 0.25);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-fast:   0.2s;
+  --t-base:   0.25s;
+  --t-slow:   0.6s;
+}

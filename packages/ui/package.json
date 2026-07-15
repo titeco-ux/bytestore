@@ -1,0 +1,21 @@
+{
+  "name": "@bytenana/ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "ByteNana web component library — atomic design, shadcn model (Tailwind + CVA).",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.6.0"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  }
+}
