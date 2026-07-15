@@ -22,6 +22,7 @@ import {
   Section,
   SectionLabel,
   Separator,
+  TechCard,
   Text,
   Textarea,
   Timeline,
@@ -734,54 +735,74 @@ const timeline: DocEntry = {
   ],
 };
 
+const TECH_SLIDES = [
+  {
+    icon: 'mdi:brain',
+    title: 'AI',
+    description:
+      'Production-grade AI — RAG pipelines, LLM agents, and automation on our own spec-driven framework.',
+    tags: ['OpenAI / GPT-4', 'LangChain', 'RAG', 'Pinecone', 'n8n'],
+    nodes: [
+      'simple-icons:openai',
+      'simple-icons:langchain',
+      'mdi:database-search',
+      'mdi:cube-outline',
+      'simple-icons:n8n',
+    ],
+  },
+  {
+    icon: 'mdi:application-brackets-outline',
+    title: 'Frontend',
+    description: 'Fast, accessible interfaces — reactive UIs that scale cleanly from MVP to enterprise.',
+    tags: ['React', 'Next.js', 'JavaScript', 'TypeScript'],
+    nodes: ['simple-icons:react', 'simple-icons:nextdotjs', 'simple-icons:javascript', 'simple-icons:typescript'],
+  },
+  {
+    icon: 'mdi:server-outline',
+    title: 'Backend',
+    description: 'Robust, secure APIs and services engineered for high load and rock-solid reliability.',
+    tags: ['Node.js', 'Java / Spring', 'Express'],
+    nodes: ['simple-icons:nodedotjs', 'simple-icons:spring', 'simple-icons:express'],
+  },
+];
+
 const carousel: DocEntry = {
   slug: 'carousel',
   name: 'Carousel',
   category: 'Molecules',
   status: 'new',
   description:
-    'One card at a time with dot navigation, prev/next arrows, auto-advance (pauses on hover/focus), swipe and keyboard arrows. Each child is a slide. Auto-advance and the slide transition respect reduced-motion.',
-  importLine: "import { Carousel, Card } from '@bytenana/ui';",
+    "One slide at a time with dot navigation, prev/next arrows, auto-advance (pauses on hover/focus), swipe and keyboard arrows. Here it holds the site's TechCard slides — a tech-stack category with a floating molecular hub. Auto-advance and the slide transition respect reduced-motion.",
+  importLine: "import { Carousel, TechCard } from '@bytenana/ui';",
   demos: [
     {
-      title: 'Testimonials',
-      description: 'Three quote cards. It auto-advances; hover to pause, or use the arrows / dots / swipe.',
-      render: () => {
-        const quotes = [
-          {
-            quote: 'We were impressed with their flexibility and skills.',
-            who: 'CEO · Series-A startup, US',
-          },
-          {
-            quote: 'They slotted into our stack and shipped in week one.',
-            who: 'CTO · HealthTech, US',
-          },
-          {
-            quote: 'Senior calibre, full US-hours overlap, half the cost.',
-            who: 'Founder · PropTech, US',
-          },
-        ];
-        return (
-          <Carousel className="w-full max-w-lg" aria-label="Testimonials">
-            {quotes.map((q) => (
-              <div key={q.who} className="px-1 pb-2">
-                <Card variant="quote">
-                  <p className="font-body text-lg italic leading-relaxed text-foreground">
-                    “{q.quote}”
-                  </p>
-                  <CardFooter className="mt-0">{q.who}</CardFooter>
-                </Card>
-              </div>
-            ))}
-          </Carousel>
-        );
-      },
-      code: `<Carousel aria-label="Testimonials">
-  <Card variant="quote">
-    <p className="text-lg italic text-foreground">“We were impressed with their flexibility and skills.”</p>
-    <CardFooter className="mt-0">CEO · Series-A startup, US</CardFooter>
-  </Card>
-  {/* …more slides */}
+      title: 'Tech-stack carousel',
+      description:
+        'The bytenana.tech carousel. It auto-advances; hover to pause, or use the arrows / dots / swipe.',
+      render: () => (
+        <Carousel className="w-full max-w-2xl" aria-label="Tech stack">
+          {TECH_SLIDES.map((s) => (
+            <div key={s.title} className="px-1 pb-2">
+              <TechCard
+                icon={s.icon}
+                title={s.title}
+                description={s.description}
+                tags={s.tags}
+                nodes={s.nodes}
+              />
+            </div>
+          ))}
+        </Carousel>
+      ),
+      code: `<Carousel aria-label="Tech stack">
+  <TechCard
+    icon="mdi:brain"
+    title="AI"
+    description="Production-grade AI — RAG pipelines, LLM agents, and automation."
+    tags={['OpenAI / GPT-4', 'LangChain', 'RAG', 'n8n']}
+    nodes={['simple-icons:openai', 'simple-icons:langchain', 'mdi:database-search', 'simple-icons:n8n']}
+  />
+  {/* …more category slides */}
 </Carousel>`,
     },
   ],
