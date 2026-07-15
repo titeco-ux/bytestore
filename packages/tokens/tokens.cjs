@@ -94,6 +94,20 @@ const containers = {
   narrow: '760px',
 };
 
+/** Signature background motion (used by the DottedMesh background). */
+const keyframes = {
+  'mesh-wave': {
+    '0%, 100%': { transform: 'translate(0, 0)' },
+    '25%': { transform: 'translate(14px, -10px)' },
+    '50%': { transform: 'translate(0, -22px)' },
+    '75%': { transform: 'translate(-14px, -10px)' },
+  },
+};
+
+const animation = {
+  'mesh-wave': 'mesh-wave 14s ease-in-out infinite',
+};
+
 module.exports = {
   colors,
   fontFamily,
@@ -104,4 +118,6 @@ module.exports = {
   transitionTimingFunction,
   transitionDuration,
   containers,
+  keyframes,
+  animation,
 };

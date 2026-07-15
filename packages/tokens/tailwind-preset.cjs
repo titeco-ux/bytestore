@@ -18,6 +18,8 @@ module.exports = {
       boxShadow: t.boxShadow,
       transitionTimingFunction: t.transitionTimingFunction,
       transitionDuration: t.transitionDuration,
+      keyframes: t.keyframes,
+      animation: t.animation,
       maxWidth: {
         container: t.containers.max,
         'container-narrow': t.containers.narrow,

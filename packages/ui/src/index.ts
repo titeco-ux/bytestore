@@ -36,3 +36,6 @@ export {
   type CardProps,
 } from './molecules/card';
 export { FormField, type FormFieldProps } from './molecules/form-field';
+
+/* --------------------------------------------------------------- Backgrounds */
+export { DottedMesh, type DottedMeshProps } from './backgrounds/dotted-mesh';

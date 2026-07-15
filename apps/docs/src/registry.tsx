@@ -8,6 +8,7 @@ import {
   CardDescription,
   CardFooter,
   Container,
+  DottedMesh,
   Eyebrow,
   FormField,
   Heading,
@@ -27,7 +28,14 @@ import {
    Add a component = add an atom/molecule in packages/ui + an entry here.
    ========================================================================== */
 
-export type Category = 'Getting started' | 'Atoms' | 'Molecules';
+/** Top-level collapsible groups in the sidebar. */
+export type Drawer = 'Design System' | 'Backgrounds';
+
+export type Category =
+  | 'Getting started'
+  | 'Atoms'
+  | 'Molecules'
+  | 'Patterns';
 
 export interface Demo {
   title: string;
@@ -42,6 +50,8 @@ export interface DocEntry {
   slug: string;
   name: string;
   category: Category;
+  /** Which sidebar drawer this lives under. Defaults to 'Design System'. */
+  drawer?: Drawer;
   status?: 'stable' | 'new' | 'wip';
   description: string;
   importLine?: string;
@@ -590,9 +600,77 @@ const formField: DocEntry = {
   ],
 };
 
+/* =============================================================== Backgrounds */
+
+const dottedMesh: DocEntry = {
+  slug: 'dotted-mesh',
+  name: 'Dotted Mesh',
+  category: 'Patterns',
+  drawer: 'Backgrounds',
+  status: 'new',
+  description:
+    'The signature drifting dot-grid. Wrap any content and DottedMesh renders an animated dotted layer behind it. Two offset radial-gradient grids drift on the mesh-wave keyframe, gated on prefers-reduced-motion.',
+  importLine: "import { DottedMesh } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'Light dots on dark',
+      description: 'The default — light dots for dark surfaces.',
+      render: () => (
+        <DottedMesh className="flex min-h-[220px] w-full max-w-xl items-center justify-center rounded-lg border border-border bg-bg p-10">
+          <div className="text-center">
+            <Eyebrow>Backgrounds</Eyebrow>
+            <Heading level={3}>Drifting dot mesh</Heading>
+            <Text variant="muted">Content sits above the animated grid.</Text>
+          </div>
+        </DottedMesh>
+      ),
+      code: `<DottedMesh className="rounded-lg bg-bg p-10">
+  <Heading level={3}>Drifting dot mesh</Heading>
+  <Text variant="muted">Content sits above the animated grid.</Text>
+</DottedMesh>`,
+    },
+    {
+      title: 'Dark dots on light',
+      description: 'variant="dots-dark" for off-white bands (e.g. the winning price card).',
+      tone: 'light',
+      render: () => (
+        <DottedMesh
+          variant="dots-dark"
+          className="flex min-h-[220px] w-full max-w-xl items-center justify-center rounded-lg border border-on-light-border bg-light p-10"
+        >
+          <div className="text-center">
+            <p className="font-heading text-xs font-semibold uppercase tracking-[0.15em] text-primary">
+              ByteNana senior
+            </p>
+            <p className="font-heading text-4xl font-extrabold text-on-light">~$100k/yr</p>
+            <p className="text-sm text-on-light-muted">architect-reviewed</p>
+          </div>
+        </DottedMesh>
+      ),
+      code: `<DottedMesh variant="dots-dark" className="rounded-lg bg-light p-10">
+  {/* the highlighted "win" card content */}
+</DottedMesh>`,
+    },
+    {
+      title: 'Static (no animation)',
+      description: 'Pass animated={false} for a still grid.',
+      render: () => (
+        <DottedMesh
+          animated={false}
+          className="flex min-h-[160px] w-full max-w-xl items-center justify-center rounded-lg border border-border bg-bg p-10"
+        >
+          <Text variant="muted">Static dot grid.</Text>
+        </DottedMesh>
+      ),
+      code: `<DottedMesh animated={false} className="rounded-lg bg-bg p-10">…</DottedMesh>`,
+    },
+  ],
+};
+
 /* ------------------------------------------------------------------ Assembly */
 
 export const registry: DocEntry[] = [
+  // Design System
   overview,
   typography,
   badge,
@@ -605,9 +683,25 @@ export const registry: DocEntry[] = [
   section,
   card,
   formField,
+  // Backgrounds
+  dottedMesh,
 ];
 
-export const categoryOrder: Category[] = ['Getting started', 'Atoms', 'Molecules'];
+/** Sidebar drawer order. */
+export const drawerOrder: Drawer[] = ['Design System', 'Backgrounds'];
+
+/** Category order within a drawer. */
+export const categoryOrder: Category[] = [
+  'Getting started',
+  'Atoms',
+  'Molecules',
+  'Patterns',
+];
+
+/** A missing drawer means the entry belongs to the Design System. */
+export function drawerOf(entry: DocEntry): Drawer {
+  return entry.drawer ?? 'Design System';
+}
 
 export function findEntry(slug: string): DocEntry | undefined {
   return registry.find((e) => e.slug === slug);
