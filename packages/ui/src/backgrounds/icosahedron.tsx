@@ -14,30 +14,65 @@ import { cn } from '../lib/cn';
    ========================================================================== */
 
 const PHI = (1 + Math.sqrt(5)) / 2;
-const NRM = Math.hypot(1, PHI, 0);
 
-// 12 icosahedron vertices, normalised to the unit sphere.
-const V: number[][] = [
-  [-1, PHI, 0], [1, PHI, 0], [-1, -PHI, 0], [1, -PHI, 0],
-  [0, -1, PHI], [0, 1, PHI], [0, -1, -PHI], [0, 1, -PHI],
-  [PHI, 0, -1], [PHI, 0, 1], [-PHI, 0, -1], [-PHI, 0, 1],
-].map((v) => [v[0] / NRM, v[1] / NRM, v[2] / NRM]);
-
-// 20 CCW faces.
-const F: number[][] = [
-  [0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11],
-  [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8],
-  [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
-  [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1],
-];
-
-// Unique edges, each tagged with its two adjacent face indices.
 interface Edge {
   a: number;
   b: number;
   faces: number[];
 }
-const E: Edge[] = (() => {
+interface Geometry {
+  V: number[][];
+  F: number[][];
+  E: Edge[];
+}
+
+/** Triangular-faced Platonic solids we can render. Key = face count. */
+export const FACE_COUNTS = [4, 8, 20] as const;
+export type FaceCount = (typeof FACE_COUNTS)[number];
+
+const SOLIDS: Record<FaceCount, { V: number[][]; F: number[][] }> = {
+  // Tetrahedron
+  4: {
+    V: [[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]],
+    F: [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]],
+  },
+  // Octahedron
+  8: {
+    V: [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]],
+    F: [[0, 2, 4], [0, 4, 3], [0, 3, 5], [0, 5, 2], [1, 4, 2], [1, 3, 4], [1, 5, 3], [1, 2, 5]],
+  },
+  // Icosahedron
+  20: {
+    V: [
+      [-1, PHI, 0], [1, PHI, 0], [-1, -PHI, 0], [1, -PHI, 0],
+      [0, -1, PHI], [0, 1, PHI], [0, -1, -PHI], [0, 1, -PHI],
+      [PHI, 0, -1], [PHI, 0, 1], [-PHI, 0, -1], [-PHI, 0, 1],
+    ],
+    F: [
+      [0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11],
+      [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8],
+      [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
+      [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1],
+    ],
+  },
+};
+
+/** Normalise vertices to the unit sphere, fix face winding outward, build edges. */
+function buildGeometry(faces: FaceCount): Geometry {
+  const src = SOLIDS[faces] ?? SOLIDS[20];
+  const V = src.V.map((v) => {
+    const n = Math.hypot(v[0], v[1], v[2]);
+    return [v[0] / n, v[1] / n, v[2] / n];
+  });
+  const F = src.F.map((f) => {
+    const a = V[f[0]], b = V[f[1]], c = V[f[2]];
+    const ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2];
+    const vx = c[0] - a[0], vy = c[1] - a[1], vz = c[2] - a[2];
+    const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+    const mx = (a[0] + b[0] + c[0]) / 3, my = (a[1] + b[1] + c[1]) / 3, mz = (a[2] + b[2] + c[2]) / 3;
+    // Ensure the normal points away from the centre (outward CCW).
+    return nx * mx + ny * my + nz * mz < 0 ? [f[0], f[2], f[1]] : [f[0], f[1], f[2]];
+  });
   const map = new Map<string, Edge>();
   F.forEach((f, fi) => {
     for (let i = 0; i < 3; i++) {
@@ -48,8 +83,8 @@ const E: Edge[] = (() => {
       map.get(key)!.faces.push(fi);
     }
   });
-  return Array.from(map.values());
-})();
+  return { V, F, E: Array.from(map.values()) };
+}
 
 const TILT = 0.4; // fixed pitch so the 3D form reads
 const STATIC_YAW = 0.6; // pleasing angle when not animating
@@ -64,6 +99,8 @@ function hexToRgb(hex: string): string {
 export interface IcosahedronProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: number;
   opacity?: number;
+  /** Face count — 4 (tetrahedron), 8 (octahedron) or 20 (icosahedron). */
+  faces?: FaceCount;
   /** Silhouette edge width in px (interior/hidden edges scale from this). */
   thickness?: number;
   /** Sphere radius as a fraction of the canvas (0.2–0.5). */
@@ -89,6 +126,7 @@ export const Icosahedron = React.forwardRef<HTMLDivElement, IcosahedronProps>((p
   const {
     size = 360,
     opacity = 1,
+    faces = 20,
     thickness = 2.6,
     radius = 0.4,
     speed = 0.00018,
@@ -107,6 +145,11 @@ export const Icosahedron = React.forwardRef<HTMLDivElement, IcosahedronProps>((p
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const wrapRef = React.useRef<HTMLDivElement>(null);
   const drawRef = React.useRef<(t: number) => void>(() => {});
+
+  // Geometry rebuilds only when the face count changes.
+  const geom = React.useMemo(() => buildGeometry(faces), [faces]);
+  const geomRef = React.useRef(geom);
+  geomRef.current = geom;
 
   // Live params (read each frame) so slider tweaks don't restart the loop.
   const cfg = React.useRef({ thickness, radius, speed, faceFill, vertices, dashedHidden, color });
@@ -145,6 +188,7 @@ export const Icosahedron = React.forwardRef<HTMLDivElement, IcosahedronProps>((p
     function draw(t: number) {
       if (!w || !h) return;
       const c = cfg.current;
+      const { V, F, E } = geomRef.current;
       const bond = hexToRgb(c.color);
       const R = Math.min(w, h) * c.radius;
       const ay = animated && !reduce ? t * c.speed : STATIC_YAW;
