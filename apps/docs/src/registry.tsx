@@ -8,6 +8,7 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
+  Carousel,
   Container,
   DottedMesh,
   Eyebrow,
@@ -733,6 +734,59 @@ const timeline: DocEntry = {
   ],
 };
 
+const carousel: DocEntry = {
+  slug: 'carousel',
+  name: 'Carousel',
+  category: 'Molecules',
+  status: 'new',
+  description:
+    'One card at a time with dot navigation, prev/next arrows, auto-advance (pauses on hover/focus), swipe and keyboard arrows. Each child is a slide. Auto-advance and the slide transition respect reduced-motion.',
+  importLine: "import { Carousel, Card } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'Testimonials',
+      description: 'Three quote cards. It auto-advances; hover to pause, or use the arrows / dots / swipe.',
+      render: () => {
+        const quotes = [
+          {
+            quote: 'We were impressed with their flexibility and skills.',
+            who: 'CEO · Series-A startup, US',
+          },
+          {
+            quote: 'They slotted into our stack and shipped in week one.',
+            who: 'CTO · HealthTech, US',
+          },
+          {
+            quote: 'Senior calibre, full US-hours overlap, half the cost.',
+            who: 'Founder · PropTech, US',
+          },
+        ];
+        return (
+          <Carousel className="w-full max-w-lg" aria-label="Testimonials">
+            {quotes.map((q) => (
+              <div key={q.who} className="px-1 pb-2">
+                <Card variant="quote">
+                  <p className="font-body text-lg italic leading-relaxed text-foreground">
+                    “{q.quote}”
+                  </p>
+                  <CardFooter className="mt-0">{q.who}</CardFooter>
+                </Card>
+              </div>
+            ))}
+          </Carousel>
+        );
+      },
+      code: `<Carousel aria-label="Testimonials">
+  <Card variant="quote">
+    <p className="text-lg italic text-foreground">“We were impressed with their flexibility and skills.”</p>
+    <CardFooter className="mt-0">CEO · Series-A startup, US</CardFooter>
+  </Card>
+  {/* …more slides */}
+</Carousel>`,
+    },
+  ],
+};
+
 /* =============================================================== Backgrounds */
 
 const dottedMesh: DocEntry = {
@@ -864,6 +918,7 @@ export const registry: DocEntry[] = [
   formField,
   projectCard,
   timeline,
+  carousel,
   // Backgrounds
   icosahedron,
   dottedMesh,
