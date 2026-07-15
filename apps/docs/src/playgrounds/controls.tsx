@@ -76,6 +76,31 @@ export function Segmented({
   );
 }
 
+export function TextField({
+  label,
+  value,
+  placeholder,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  placeholder?: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <label className="flex flex-col gap-1.5">
+      <span className="text-sm font-medium text-on-light">{label}</span>
+      <input
+        type="text"
+        value={value}
+        placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+        className="rounded border border-on-light-border bg-white px-3 py-1.5 text-sm text-on-light placeholder:text-on-light-dim focus:border-primary focus:outline-none focus:ring-[3px] focus:ring-primary-glow"
+      />
+    </label>
+  );
+}
+
 export function Toggle({
   label,
   checked,

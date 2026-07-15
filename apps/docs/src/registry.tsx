@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { OrbitRingsPlayground } from './playgrounds/OrbitRingsPlayground';
 import { IcosahedronPlayground } from './playgrounds/IcosahedronPlayground';
 import {
   Badge,
@@ -823,34 +822,6 @@ const dottedMesh: DocEntry = {
   ],
 };
 
-const orbitRings: DocEntry = {
-  slug: 'orbit-rings',
-  name: 'Orbit Rings',
-  category: 'Patterns',
-  drawer: 'Backgrounds',
-  status: 'new',
-  description:
-    "The hero's rotating concentric-ring / molecular-orbit shape. Everything is configurable — use the controls below to change size, opacity, border thickness, line style (solid / dashed / dotted), ring count, dots and animation.",
-  importLine: "import { OrbitRings } from '@bytenana/ui';",
-  demos: [
-    {
-      title: 'Playground',
-      description: 'Tweak the shape live. The panel mirrors the exact props.',
-      flush: true,
-      render: () => <OrbitRingsPlayground />,
-      code: `<OrbitRings
-  size={300}
-  opacity={1}
-  thickness={1.5}
-  rings={3}
-  lineStyle="dotted"   // 'solid' | 'dashed' | 'dotted'
-  dots
-  animated
-/>`,
-    },
-  ],
-};
-
 const icosahedron: DocEntry = {
   slug: 'icosahedron',
   name: 'Icosahedron',
@@ -858,23 +829,19 @@ const icosahedron: DocEntry = {
   drawer: 'Backgrounds',
   status: 'new',
   description:
-    "The hero's pulsating wireframe icosahedron (12 vertices, 30 edges). Use the controls to change size, opacity, border thickness, line style (solid / dashed / dotted), vertex dots, the pulse, and an optional slow spin.",
+    "The hero's tumbling wireframe icosahedron (canvas): 12 vertices / 20 faces spun on a yaw + tilt, silhouette edges solid with a glow, interior edges dashed, front faces tinted. Anything you nest as children sits pinned at the centre (the hero puts the logo there). Use the controls to change size, opacity, edge thickness, radius, spin speed, and what's inside.",
   importLine: "import { Icosahedron } from '@bytenana/ui';",
   demos: [
     {
       title: 'Playground',
-      description: 'Tweak the shape live. The panel mirrors the exact props.',
+      description:
+        'Tweak the shape live — including what sits inside the polyhedron. The panel mirrors the exact props.',
       flush: true,
       render: () => <IcosahedronPlayground />,
-      code: `<Icosahedron
-  size={320}
-  opacity={1}
-  thickness={1.5}
-  lineStyle="solid"   // 'solid' | 'dashed' | 'dotted'
-  vertices
-  pulse
-  spin={false}
-/>`,
+      code: `<Icosahedron size={340} thickness={2.6} radius={0.4} pulse animated>
+  {/* anything sits pinned at the centre */}
+  <img src="/logo.svg" alt="ByteNana" />
+</Icosahedron>`,
     },
   ],
 };
@@ -900,7 +867,6 @@ export const registry: DocEntry[] = [
   // Backgrounds
   icosahedron,
   dottedMesh,
-  orbitRings,
 ];
 
 /** Sidebar drawer order. */
