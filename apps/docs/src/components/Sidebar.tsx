@@ -58,16 +58,7 @@ export function Sidebar({ activeSlug, onNavigate }: SidebarProps) {
           const isOpen = open.has(drawer);
 
           return (
-            <div
-              key={drawer}
-              className={
-                'flex flex-col rounded-lg ' +
-                // The Components drawer sits on a distinct panel to set it apart.
-                (drawer === 'Components'
-                  ? 'border border-on-light-border bg-black/[0.05] p-2'
-                  : '')
-              }
-            >
+            <div key={drawer} className="flex flex-col">
               <DrawerHeader
                 label={drawer}
                 open={isOpen}

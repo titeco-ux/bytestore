@@ -35,7 +35,7 @@ import {
    ========================================================================== */
 
 /** Top-level collapsible groups in the sidebar. */
-export type Drawer = 'Components' | 'Backgrounds';
+export type Drawer = 'Design System' | 'Components';
 
 export type Category =
   | 'Getting started'
@@ -908,7 +908,7 @@ const dottedMesh: DocEntry = {
   slug: 'dotted-mesh',
   name: 'Dotted Mesh',
   category: 'Patterns',
-  drawer: 'Backgrounds',
+  drawer: 'Components',
   status: 'new',
   description:
     'The signature drifting dot-grid. Wrap any content and DottedMesh renders an animated dotted layer behind it. Two offset radial-gradient grids drift on the mesh-wave keyframe, gated on prefers-reduced-motion.',
@@ -931,7 +931,7 @@ const icosahedron: DocEntry = {
   slug: 'icosahedron',
   name: 'Icosahedron',
   category: 'Patterns',
-  drawer: 'Backgrounds',
+  drawer: 'Components',
   status: 'new',
   description:
     "The hero's tumbling wireframe polyhedron (canvas): vertices / faces spun on a yaw + tilt, silhouette edges solid with a glow, interior edges dashed, front faces tinted. Switch the face count (4 tetra / 8 octa / 20 icosa / 80 geodesic), and nest anything as children — text or a flat SVG icon — pinned at the centre (the hero puts the logo there). Controls cover size, opacity, edge thickness, radius, spin speed, and what's inside.",
@@ -977,7 +977,7 @@ export const registry: DocEntry[] = [
 ];
 
 /** Sidebar drawer order. */
-export const drawerOrder: Drawer[] = ['Components', 'Backgrounds'];
+export const drawerOrder: Drawer[] = ['Design System', 'Components'];
 
 /** Category order within a drawer. */
 export const categoryOrder: Category[] = [
@@ -987,9 +987,9 @@ export const categoryOrder: Category[] = [
   'Patterns',
 ];
 
-/** A missing drawer means the entry belongs to Components. */
+/** A missing drawer means the entry belongs to the Design System. */
 export function drawerOf(entry: DocEntry): Drawer {
-  return entry.drawer ?? 'Components';
+  return entry.drawer ?? 'Design System';
 }
 
 export function findEntry(slug: string): DocEntry | undefined {
