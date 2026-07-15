@@ -16,9 +16,8 @@ interface SidebarProps {
 /** Left navigation: brand mark + collapsible drawers → categories → items. */
 export function Sidebar({ activeSlug, onNavigate }: SidebarProps) {
   const activeEntry = registry.find((e) => e.slug === activeSlug);
-  const activeDrawer = activeEntry ? drawerOf(activeEntry) : drawerOrder[0];
 
-  // All drawers open by default; the active drawer can never be collapsed shut.
+  // All drawers open by default; each toggles freely.
   const [open, setOpen] = React.useState<Set<Drawer>>(() => new Set(drawerOrder));
 
   const toggle = (drawer: Drawer) =>
@@ -27,6 +26,13 @@ export function Sidebar({ activeSlug, onNavigate }: SidebarProps) {
       next.has(drawer) ? next.delete(drawer) : next.add(drawer);
       return next;
     });
+
+  // Opening a page ensures its drawer is expanded (but never re-opens a drawer
+  // the user just collapsed while staying on the same page).
+  React.useEffect(() => {
+    if (activeEntry) setOpen((prev) => new Set(prev).add(drawerOf(activeEntry)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSlug]);
 
   return (
     <aside className="scroll-quiet flex h-full w-64 shrink-0 flex-col overflow-y-auto border-r border-on-light-border bg-light">
@@ -49,7 +55,7 @@ export function Sidebar({ activeSlug, onNavigate }: SidebarProps) {
         {drawerOrder.map((drawer) => {
           const entries = registry.filter((e) => drawerOf(e) === drawer);
           if (entries.length === 0) return null;
-          const isOpen = open.has(drawer) || drawer === activeDrawer;
+          const isOpen = open.has(drawer);
 
           return (
             <div key={drawer} className="flex flex-col">

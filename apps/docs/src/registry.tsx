@@ -16,6 +16,7 @@ import {
   Icon,
   Input,
   Label,
+  ProjectCard,
   Section,
   SectionLabel,
   Separator,
@@ -602,6 +603,74 @@ const formField: DocEntry = {
   ],
 };
 
+const projectCard: DocEntry = {
+  slug: 'project-card',
+  name: 'ProjectCard',
+  category: 'Molecules',
+  status: 'new',
+  description:
+    'A full-bleed project thumbnail that reveals info on hover. Category + title stay visible; the blurb and link slide up and fade in on hover (and on keyboard focus when it is a link). The image zooms slightly and the gradient darkens. This is the our-work grid card.',
+  importLine: "import { ProjectCard } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'Hover to reveal (grid)',
+      description:
+        'Two cards in a grid. Hover (or tab to) a card to slide the description + link up.',
+      render: () => (
+        <div className="grid w-full max-w-3xl grid-cols-1 gap-6 sm:grid-cols-2">
+          <ProjectCard
+            href="#/project-card"
+            icon="mdi:excavator"
+            category="IIoT · Industrial Mining"
+            title="Multotec"
+            blurb="A predictive-maintenance platform turning raw sensor data into plant-floor decisions."
+            className="min-h-[320px] bg-gradient-to-br from-surface-3 to-bg"
+          />
+          <ProjectCard
+            href="#/project-card"
+            icon="mdi:message-processing-outline"
+            category="HealthTech · Conversational AI"
+            title="ByteWhats"
+            blurb="A WhatsApp-native assistant that triages patient questions with an LLM pipeline."
+            className="min-h-[320px] bg-gradient-to-br from-surface-3 to-bg"
+          />
+        </div>
+      ),
+      code: `<ProjectCard
+  href="/work/multotec"
+  image="/img/multotec.jpg"
+  category="IIoT · Industrial Mining"
+  title="Multotec"
+  blurb="A predictive-maintenance platform turning raw sensor data into decisions."
+/>`,
+    },
+    {
+      title: 'Featured (full width)',
+      description: 'The same card, full-bleed — the homepage featured slot.',
+      flush: true,
+      render: () => (
+        <ProjectCard
+          href="#/project-card"
+          icon="mdi:family-tree"
+          category="Social · Genealogy"
+          title="GenoStories"
+          blurb="Turning family trees into shareable, narrated stories — built for scale on a graph backend."
+          linkLabel="Read the case study →"
+          className="h-[440px] w-full rounded-none bg-gradient-to-br from-surface-3 via-surface-2 to-bg"
+        />
+      ),
+      code: `<ProjectCard
+  href="/work/genostories"
+  image="/img/genostories.jpg"
+  category="Social · Genealogy"
+  title="GenoStories"
+  blurb="Turning family trees into shareable, narrated stories."
+  linkLabel="Read the case study →"
+/>`,
+    },
+  ],
+};
+
 /* =============================================================== Backgrounds */
 
 const dottedMesh: DocEntry = {
@@ -707,6 +776,7 @@ export const registry: DocEntry[] = [
   section,
   card,
   formField,
+  projectCard,
   // Backgrounds
   dottedMesh,
 ];
