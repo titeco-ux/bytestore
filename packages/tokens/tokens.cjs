@@ -102,10 +102,16 @@ const keyframes = {
     '50%': { transform: 'translate(0, -22px)' },
     '75%': { transform: 'translate(-14px, -10px)' },
   },
+  // Gentle breathing scale (the hero shape's pulse).
+  'pulse-scale': {
+    '0%, 100%': { transform: 'scale(1)' },
+    '50%': { transform: 'scale(1.06)' },
+  },
 };
 
 const animation = {
   'mesh-wave': 'mesh-wave 14s ease-in-out infinite',
+  'pulse-scale': 'pulse-scale 6s ease-in-out infinite',
 };
 
 module.exports = {

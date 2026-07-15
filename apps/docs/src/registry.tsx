@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { OrbitRingsPlayground } from './playgrounds/OrbitRingsPlayground';
+import { IcosahedronPlayground } from './playgrounds/IcosahedronPlayground';
 import {
   Badge,
   Button,
@@ -850,6 +851,34 @@ const orbitRings: DocEntry = {
   ],
 };
 
+const icosahedron: DocEntry = {
+  slug: 'icosahedron',
+  name: 'Icosahedron',
+  category: 'Patterns',
+  drawer: 'Backgrounds',
+  status: 'new',
+  description:
+    "The hero's pulsating wireframe icosahedron (12 vertices, 30 edges). Use the controls to change size, opacity, border thickness, line style (solid / dashed / dotted), vertex dots, the pulse, and an optional slow spin.",
+  importLine: "import { Icosahedron } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'Playground',
+      description: 'Tweak the shape live. The panel mirrors the exact props.',
+      flush: true,
+      render: () => <IcosahedronPlayground />,
+      code: `<Icosahedron
+  size={320}
+  opacity={1}
+  thickness={1.5}
+  lineStyle="solid"   // 'solid' | 'dashed' | 'dotted'
+  vertices
+  pulse
+  spin={false}
+/>`,
+    },
+  ],
+};
+
 /* ------------------------------------------------------------------ Assembly */
 
 export const registry: DocEntry[] = [
@@ -869,6 +898,7 @@ export const registry: DocEntry[] = [
   projectCard,
   timeline,
   // Backgrounds
+  icosahedron,
   dottedMesh,
   orbitRings,
 ];
