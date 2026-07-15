@@ -52,7 +52,7 @@ export const TimelineStep = React.forwardRef<HTMLLIElement, TimelineStepProps>(
       {...props}
     >
       {/* Atom */}
-      <span className="relative z-10 flex h-[52px] w-[52px] flex-none items-center justify-center rounded-full border border-primary/50 bg-bg font-heading text-lg font-bold text-primary shadow-[0_0_0_6px_rgba(242,183,5,0.06)] transition-[border-color,background-color,box-shadow,transform] duration-base ease-byte group-hover:border-primary group-hover:bg-primary/10 group-hover:shadow-[0_0_0_8px_rgba(242,183,5,0.1)] motion-safe:group-hover:-translate-y-1.5">
+      <span className="relative z-10 flex h-[52px] w-[52px] flex-none items-center justify-center rounded-full border border-primary/50 bg-bg font-heading text-lg font-bold text-primary shadow-[0_0_0_6px_rgba(242,183,5,0.06)] transition-[border-color,background-color,color,box-shadow,transform] duration-base ease-byte group-hover:border-primary group-hover:bg-primary group-hover:text-bg group-hover:shadow-[0_0_0_8px_rgba(242,183,5,0.15)] motion-safe:group-hover:-translate-y-1.5">
         {icon ? <Icon icon={icon} className="text-2xl" /> : number}
       </span>
 
