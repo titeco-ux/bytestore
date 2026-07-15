@@ -26,6 +26,10 @@
   --color-border:       rgba(252, 252, 252, 0.08);
   --color-border-hover: rgba(242, 183, 5, 0.35);
 
+  /* --- Feedback ----------------------------------------------------------- */
+  --color-danger:      #E05252;
+  --color-danger-glow: rgba(224, 82, 82, 0.15);
+
   /* --- On-light equivalents ---------------------------------------------- */
   --on-light-text:   #0F1112;
   --on-light-muted:  rgba(15, 17, 18, 0.65);

@@ -28,6 +28,10 @@ const colors = {
   border: 'rgba(252, 252, 252, 0.08)',
   'border-hover': 'rgba(242, 183, 5, 0.35)',
 
+  // Feedback
+  danger: '#E05252', // invalid input border / error text
+  'danger-glow': 'rgba(224, 82, 82, 0.15)',
+
   // On-light equivalents (for .section--light contexts)
   'on-light': '#0F1112',
   'on-light-muted': 'rgba(15, 17, 18, 0.65)',
