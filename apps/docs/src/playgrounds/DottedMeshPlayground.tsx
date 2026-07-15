@@ -25,6 +25,7 @@ export function DottedMeshPlayground() {
           speed={speed}
           gap={gap}
           animated={animated}
+          ignoreReducedMotion
           style={{ opacity, height }}
           className="flex w-full items-center justify-center"
         >
