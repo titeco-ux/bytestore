@@ -22,6 +22,8 @@ import {
   Separator,
   Text,
   Textarea,
+  Timeline,
+  TimelineStep,
 } from '@bytenana/ui';
 
 /* ==========================================================================
@@ -671,6 +673,65 @@ const projectCard: DocEntry = {
   ],
 };
 
+const timeline: DocEntry = {
+  slug: 'timeline',
+  name: 'Timeline',
+  category: 'Molecules',
+  status: 'new',
+  description:
+    'A phase / process flow of circular nodes joined by a yellow gradient bond. Each node lifts and glows on hover. Horizontal on desktop, stacks vertically on mobile. This is the Stabilization → Deployment → Growth roadmap on the case-study pages.',
+  importLine: "import { Timeline, TimelineStep } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'Numbered phases (hover a node)',
+      render: () => (
+        <Timeline className="w-full max-w-3xl">
+          <TimelineStep
+            number={1}
+            title="Stabilization"
+            description="Harden the Flutter client and Laravel API — crash paths, secure vaults."
+          />
+          <TimelineStep
+            number={2}
+            title="Deployment"
+            description="Ship to the App Store and Play Store; roll out to the first cohort."
+          />
+          <TimelineStep
+            number={3}
+            title="Growth"
+            description="Ancestry.com API, payments, and an AI chatbot in Phase 2."
+          />
+        </Timeline>
+      ),
+      code: `<Timeline>
+  <TimelineStep number={1} title="Stabilization"
+    description="Harden the Flutter client and Laravel API." />
+  <TimelineStep number={2} title="Deployment"
+    description="Ship to the App Store and Play Store." />
+  <TimelineStep number={3} title="Growth"
+    description="Ancestry.com API, payments, and an AI chatbot." />
+</Timeline>`,
+    },
+    {
+      title: 'Icon nodes',
+      description: 'Pass `icon` instead of `number` for an architecture flow.',
+      render: () => (
+        <Timeline className="w-full max-w-3xl">
+          <TimelineStep icon="mdi:cellphone" title="Client" description="Flutter — iOS & Android." />
+          <TimelineStep icon="mdi:server-network" title="Engine" description="Laravel API & vaults." />
+          <TimelineStep icon="mdi:database-outline" title="Data" description="Graph backend at scale." />
+          <TimelineStep icon="mdi:robot-happy-outline" title="AI" description="Chatbot & automation." />
+        </Timeline>
+      ),
+      code: `<Timeline>
+  <TimelineStep icon="mdi:cellphone" title="Client" description="Flutter — iOS & Android." />
+  <TimelineStep icon="mdi:server-network" title="Engine" description="Laravel API & vaults." />
+  <TimelineStep icon="mdi:database-outline" title="Data" description="Graph backend at scale." />
+</Timeline>`,
+    },
+  ],
+};
+
 /* =============================================================== Backgrounds */
 
 const dottedMesh: DocEntry = {
@@ -777,6 +838,7 @@ export const registry: DocEntry[] = [
   card,
   formField,
   projectCard,
+  timeline,
   // Backgrounds
   dottedMesh,
 ];

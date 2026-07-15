@@ -37,6 +37,7 @@ export {
 } from './molecules/card';
 export { FormField, type FormFieldProps } from './molecules/form-field';
 export { ProjectCard, type ProjectCardProps } from './molecules/project-card';
+export { Timeline, TimelineStep, type TimelineStepProps } from './molecules/timeline';
 
 /* --------------------------------------------------------------- Backgrounds */
 export { DottedMesh, type DottedMeshProps } from './backgrounds/dotted-mesh';
