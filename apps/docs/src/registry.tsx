@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { OrbitRingsPlayground } from './playgrounds/OrbitRingsPlayground';
 import {
   Badge,
   Button,
@@ -821,6 +822,34 @@ const dottedMesh: DocEntry = {
   ],
 };
 
+const orbitRings: DocEntry = {
+  slug: 'orbit-rings',
+  name: 'Orbit Rings',
+  category: 'Patterns',
+  drawer: 'Backgrounds',
+  status: 'new',
+  description:
+    "The hero's rotating concentric-ring / molecular-orbit shape. Everything is configurable — use the controls below to change size, opacity, border thickness, line style (solid / dashed / dotted), ring count, dots and animation.",
+  importLine: "import { OrbitRings } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'Playground',
+      description: 'Tweak the shape live. The panel mirrors the exact props.',
+      flush: true,
+      render: () => <OrbitRingsPlayground />,
+      code: `<OrbitRings
+  size={300}
+  opacity={1}
+  thickness={1.5}
+  rings={3}
+  lineStyle="dotted"   // 'solid' | 'dashed' | 'dotted'
+  dots
+  animated
+/>`,
+    },
+  ],
+};
+
 /* ------------------------------------------------------------------ Assembly */
 
 export const registry: DocEntry[] = [
@@ -841,6 +870,7 @@ export const registry: DocEntry[] = [
   timeline,
   // Backgrounds
   dottedMesh,
+  orbitRings,
 ];
 
 /** Sidebar drawer order. */

@@ -41,3 +41,4 @@ export { Timeline, TimelineStep, type TimelineStepProps } from './molecules/time
 
 /* --------------------------------------------------------------- Backgrounds */
 export { DottedMesh, type DottedMeshProps } from './backgrounds/dotted-mesh';
+export { OrbitRings, type OrbitRingsProps } from './backgrounds/orbit-rings';
