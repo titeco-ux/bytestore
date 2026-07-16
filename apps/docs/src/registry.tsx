@@ -1922,7 +1922,7 @@ function PricingTabsDemo() {
         })}
       </div>
 
-      <Button full className="mt-5">
+      <Button full className="mt-8">
         Get {selected.name}
       </Button>
     </div>
@@ -1985,7 +1985,7 @@ function PricingTabs() {
         })}
       </div>
 
-      <Button full className="mt-5">Get {plans.find((p) => p.id === plan).name}</Button>
+      <Button full className="mt-8">Get {plans.find((p) => p.id === plan).name}</Button>
     </div>
   );
 }`,

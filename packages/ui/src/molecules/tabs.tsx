@@ -132,7 +132,7 @@ export function Tab({ value, className, children, ...props }: TabProps) {
           : cn(
               'rounded-md border p-3 text-left',
               selected
-                ? 'border-primary bg-primary/10 text-foreground'
+                ? 'border-primary bg-primary text-bg'
                 : 'border-border text-muted hover:border-border-hover hover:text-foreground',
             ),
         className,
