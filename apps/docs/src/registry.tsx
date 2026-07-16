@@ -1330,6 +1330,97 @@ CONTEXT / RULES
   ],
 };
 
+const meshCard: DocEntry = {
+  slug: 'mesh-card',
+  name: 'Mesh Card',
+  category: 'Cards',
+  drawer: 'All Components',
+  hidden: true,
+  status: 'new',
+  description:
+    'A card with the animated drifting dot-mesh living behind its content. The mesh sits on the card surface; the icon, title, paragraph and CTA float above it.',
+  importLine: "import { DottedMesh, Icon, Button } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'Mesh background card',
+      description: 'The dots drift behind the content. Hover pauses nothing — it just keeps moving.',
+      render: () => (
+        <DottedMesh
+          variant="dots-light"
+          ignoreReducedMotion
+          className="w-full max-w-md rounded-lg border border-border bg-surface px-8 py-10 text-center"
+        >
+          <span className="mb-4 flex justify-center text-3xl text-primary">
+            <Icon icon="mdi:rocket-launch-outline" />
+          </span>
+          <h3 className="mb-2 font-heading text-xl font-bold text-foreground">
+            Ship with a senior team
+          </h3>
+          <p className="font-body text-sm leading-relaxed text-muted">
+            A dark card with a living, drifting dot-mesh behind the content.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <Button>Book a call</Button>
+          </div>
+        </DottedMesh>
+      ),
+      code: `<DottedMesh
+  variant="dots-light"
+  className="max-w-md rounded-lg border border-border bg-surface px-8 py-10 text-center"
+>
+  <span className="mb-4 flex justify-center text-3xl text-primary">
+    <Icon icon="mdi:rocket-launch-outline" />
+  </span>
+  <h3 className="mb-2 font-heading text-xl font-bold text-foreground">Ship with a senior team</h3>
+  <p className="text-sm leading-relaxed text-muted">
+    A dark card with a living, drifting dot-mesh behind the content.
+  </p>
+  <div className="mt-6 flex justify-center"><Button>Book a call</Button></div>
+</DottedMesh>`,
+      codeHtml: `<!-- .card + .section-mesh (the drifting dots live in components.css) -->
+<div class="card section-mesh" style="overflow:hidden;text-align:center">
+  <div style="position:relative;z-index:1">
+    <span class="card-icon"><iconify-icon icon="mdi:rocket-launch-outline"></iconify-icon></span>
+    <h3>Ship with a senior team</h3>
+    <p>A dark card with a living, drifting dot-mesh behind the content.</p>
+    <a class="btn btn-primary" href="#book" style="margin-top:1.5rem">Book a call</a>
+  </div>
+</div>`,
+      codePrompt: `Build a self-contained card with an animated, drifting dot-mesh background.
+Assume no design system or framework is installed — specify everything inline.
+Works as React (Tailwind or CSS) or plain HTML/CSS.
+
+CARD
+- Background #161A1C, 1px border rgba(255,255,255,0.08), corner radius 16px,
+  overflow hidden. Padding 40px top/bottom, 32px left/right. Content centered.
+- Sits on a dark page background: #0F1112.
+
+ANIMATED MESH BACKGROUND (behind the content)
+- Two overlapping dot grids drawn with radial-gradients: 1px dots colored
+  rgba(255,255,255,0.10), grid size 28px, the second grid offset by 14px on both
+  axes (position "0 0" and "14px 14px"). The mesh layer is absolutely positioned
+  and extends ~80px beyond every edge so it never shows a hard boundary.
+- It drifts on a looping keyframe (name it "mesh-wave"), 14s ease-in-out infinite:
+    0%,100% translate(0,0)  ·  25% translate(14px,-10px)  ·
+    50% translate(0,-22px)  ·  75% translate(-14px,-10px)
+- Content sits above the mesh via a higher z-index. The mesh is decorative
+  (aria-hidden) and does not capture pointer events.
+- Respect prefers-reduced-motion: freeze the drift when reduced.
+
+CONTENT (stacked, centered)
+- Icon: ~30px, color #F2B705, 16px below.
+- Title: "IBM Plex Sans", weight 700, 20px, #FCFCFC, 8px below.
+- Paragraph: "Inter", weight 400, 14px, line-height 1.6, rgba(252,252,252,0.55).
+- Button (optional CTA): amber fill #F2B705, dark text #0F1112, radius 8px,
+  padding 12px 24px, "Inter" weight 600; hover lightens to #F5C84A.
+
+RULES
+- Amber #F2B705 is the ONLY accent (icon, button, nothing else). Never amber body
+  text. 8-pt spacing. Load fonts IBM Plex Sans 400/700 and Inter 400/600.`,
+    },
+  ],
+};
+
 const cards: DocEntry = {
   slug: 'cards',
   name: 'Cards',
@@ -1359,6 +1450,27 @@ const cards: DocEntry = {
         <div className="flex items-center justify-between px-4 py-3">
           <span className="font-heading text-sm font-bold text-on-light">ByteNana Card</span>
           <span className="text-xs text-on-light-dim">3-card row</span>
+        </div>
+      </a>
+
+      <a
+        href="#/mesh-card"
+        className="group flex flex-col overflow-hidden rounded-lg border border-on-light-border transition-colors duration-fast hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+      >
+        <div className="bg-bg p-5">
+          <DottedMesh
+            variant="dots-light"
+            ignoreReducedMotion
+            className="flex h-24 items-center justify-center rounded-md border border-border bg-surface"
+          >
+            <span className="text-2xl text-primary">
+              <Icon icon="mdi:rocket-launch-outline" />
+            </span>
+          </DottedMesh>
+        </div>
+        <div className="flex items-center justify-between px-4 py-3">
+          <span className="font-heading text-sm font-bold text-on-light">Mesh Card</span>
+          <span className="text-xs text-on-light-dim">animated bg</span>
         </div>
       </a>
     </div>
@@ -1393,6 +1505,7 @@ export const registry: DocEntry[] = [
   // All Components (gallery + hidden detail pages)
   cards,
   bytenanaCard,
+  meshCard,
 ];
 
 /** Sidebar drawer order. */
