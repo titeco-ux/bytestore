@@ -1892,7 +1892,7 @@ function PricingTabsDemo() {
         </TabList>
       </Tabs>
 
-      <div className="mt-5 flex flex-col gap-2">
+      <div className="mt-5 flex flex-col gap-2" role="radiogroup" aria-label="Plan">
         {PT_PLANS.map((p) => {
           const active = plan === p.id;
           const price = period === 'monthly' ? p.monthly : p.yearly;
@@ -1900,22 +1900,23 @@ function PricingTabsDemo() {
             <button
               key={p.id}
               type="button"
-              aria-pressed={active}
+              role="radio"
+              aria-checked={active}
               onClick={() => setPlan(p.id)}
-              className={cn(
-                'flex items-center justify-between rounded-md border p-3 text-left transition-colors duration-fast ease-byte focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
-                active
-                  ? 'border-primary bg-primary/10'
-                  : 'border-border hover:border-border-hover',
-              )}
+              className="flex items-center justify-between rounded-md border border-border p-3 text-left transition-colors duration-fast ease-byte hover:border-border-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               <span>
                 <span className="block font-heading text-sm font-bold text-foreground">{p.name}</span>
                 <span className="block text-xs text-muted">{p.note}</span>
               </span>
-              <span className="font-heading text-lg font-extrabold text-foreground">
-                {price}
-                {p.id !== 'free' && <span className="text-xs font-semibold text-muted">{per}</span>}
+              <span className="flex items-center gap-3">
+                <span className="font-heading text-lg font-extrabold text-foreground">
+                  {price}
+                  {p.id !== 'free' && <span className="text-xs font-semibold text-muted">{per}</span>}
+                </span>
+                <span className={cn('text-xl leading-none', active ? 'text-primary' : 'text-dim')}>
+                  <Icon icon={active ? 'mdi:radiobox-marked' : 'mdi:radiobox-blank'} />
+                </span>
               </span>
             </button>
           );
@@ -1965,20 +1966,23 @@ function PricingTabs() {
         </TabList>
       </Tabs>
 
-      <div className="mt-5 flex flex-col gap-2">
+      <div className="mt-5 flex flex-col gap-2" role="radiogroup" aria-label="Plan">
         {plans.map((p) => {
+          const active = plan === p.id;
           const price = period === 'monthly' ? p.monthly : p.yearly;
           return (
-            <button key={p.id} onClick={() => setPlan(p.id)}
-              className={plan === p.id
-                ? 'flex items-center justify-between rounded-md border border-primary bg-primary/10 p-3'
-                : 'flex items-center justify-between rounded-md border border-border p-3 hover:border-border-hover'}>
+            <button key={p.id} role="radio" aria-checked={active} onClick={() => setPlan(p.id)}
+              className="flex items-center justify-between rounded-md border border-border p-3 hover:border-border-hover">
               <span>
                 <span className="block font-heading text-sm font-bold">{p.name}</span>
                 <span className="block text-xs text-muted">{p.note}</span>
               </span>
-              <span className="font-heading text-lg font-extrabold">
-                {price}{p.id !== 'free' && <span className="text-xs text-muted">{per}</span>}
+              <span className="flex items-center gap-3">
+                <span className="font-heading text-lg font-extrabold">
+                  {price}{p.id !== 'free' && <span className="text-xs text-muted">{per}</span>}
+                </span>
+                <Icon icon={active ? 'mdi:radiobox-marked' : 'mdi:radiobox-blank'}
+                  className={active ? 'text-xl text-primary' : 'text-xl text-dim'} />
               </span>
             </button>
           );
@@ -2031,15 +2035,20 @@ BILLING TABS (below the heading)
   tab gets an amber #F2B705 border and a 10%-amber fill. Accessible: role
   tablist/tab, aria-selected, roving tabindex, ArrowLeft/Right + Home/End.
 
-PRICE OPTIONS (three selectable rows below the tabs, 8px gap)
-- Each row is a selectable button showing, on the left, a bold plan name
+PRICE OPTIONS (three selectable rows below the tabs, 8px gap — a radio group)
+- Each row is a selectable button showing, on the LEFT, a bold plan name
   ("IBM Plex Sans" 14px #FCFCFC) with a little subtitle under it ("Inter" 12px
-  rgba(252,252,252,0.55)); on the right, the price ("IBM Plex Sans" 800, 18px,
-  #FCFCFC) with a muted period suffix ("/mo" or "/yr", except the Free plan).
+  rgba(252,252,252,0.55)); on the RIGHT, the price ("IBM Plex Sans" 800, 18px,
+  #FCFCFC) with a muted period suffix ("/mo" or "/yr", except the Free plan) and,
+  beside it, a RADIO indicator icon.
+- The radio icon: an empty circle when unselected (dim, rgba(252,252,252,0.35)),
+  and a filled circle-in-circle when selected (amber #F2B705). This is the ONLY
+  selection cue — do NOT change the row's border or fill on selection.
 - Plans: Free ($0 both periods), Pro ($29/mo or $290/yr), Business ($99/mo or
   $990/yr). Switching the Monthly/Yearly tab swaps every price + suffix.
-- Row border 1px rgba(255,255,255,0.08), radius 8px, padding 12px. The SELECTED
-  row gets an amber #F2B705 border + 10%-amber fill. Only one selected at a time.
+- Row border 1px rgba(255,255,255,0.08), radius 8px, padding 12px; border
+  brightens on hover. Exactly one selected at a time (role="radiogroup" with
+  role="radio" + aria-checked).
 
 BUTTON (one, full width, below)
 - Amber fill #F2B705, dark text #0F1112, radius 8px, padding 12px 24px, "Inter"
