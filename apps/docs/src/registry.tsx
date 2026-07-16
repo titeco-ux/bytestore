@@ -98,6 +98,36 @@ function DocCode({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** Gallery tile: a full-bleed component preview with the name + blurb overlaid on top. */
+function GalleryThumb({
+  href,
+  name,
+  meta,
+  children,
+}: {
+  href: string;
+  name: string;
+  meta: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      className="group relative block h-56 overflow-hidden rounded-lg border border-on-light-border transition-colors duration-fast hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+    >
+      {/* full-bleed preview */}
+      <div className="absolute inset-0 bg-bg">{children}</div>
+      {/* legibility gradient behind the caption */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/85 via-black/55 to-transparent" />
+      {/* caption on top */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-col gap-0.5 p-4">
+        <span className="font-heading text-sm font-bold text-white">{name}</span>
+        <span className="text-xs text-white/60">{meta}</span>
+      </div>
+    </a>
+  );
+}
+
 const gettingStarted: DocEntry = {
   slug: 'getting-started',
   name: 'Getting Started',
@@ -1543,11 +1573,8 @@ const cards: DocEntry = {
   demos: [],
   body: () => (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <a
-        href="#/bytenana-card"
-        className="group flex flex-col overflow-hidden rounded-lg border border-on-light-border transition-colors duration-fast hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-      >
-        <div className="flex items-stretch gap-2 bg-bg p-5">
+      <GalleryThumb href="#/bytenana-card" name="ByteNana Card" meta="3-card row">
+        <div className="flex h-full items-center gap-2 p-5 pt-16">
           {BYTE_CARD_ITEMS.map((c) => (
             <div key={c.title} className="flex-1 rounded-md border border-border bg-surface p-2.5">
               <span className="text-sm text-primary">
@@ -1559,38 +1586,22 @@ const cards: DocEntry = {
             </div>
           ))}
         </div>
-        <div className="flex items-center justify-between px-4 py-3">
-          <span className="font-heading text-sm font-bold text-on-light">ByteNana Card</span>
-          <span className="text-xs text-on-light-dim">3-card row</span>
-        </div>
-      </a>
+      </GalleryThumb>
 
-      <a
-        href="#/mesh-card"
-        className="group flex flex-col overflow-hidden rounded-lg border border-on-light-border transition-colors duration-fast hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-      >
-        <div className="bg-bg p-5">
-          <DottedMesh
-            variant="dots-light"
-            ignoreReducedMotion
-            className="flex h-24 items-center justify-center rounded-md border border-border bg-surface"
-          >
-            <span className="text-2xl text-primary">
-              <Icon icon="mdi:rocket-launch-outline" />
-            </span>
-          </DottedMesh>
-        </div>
-        <div className="flex items-center justify-between px-4 py-3">
-          <span className="font-heading text-sm font-bold text-on-light">Mesh Card</span>
-          <span className="text-xs text-on-light-dim">animated bg</span>
-        </div>
-      </a>
+      <GalleryThumb href="#/mesh-card" name="Mesh Card" meta="animated background">
+        <DottedMesh
+          variant="dots-light"
+          ignoreReducedMotion
+          className="flex h-full w-full items-center justify-center bg-surface"
+        >
+          <span className="text-4xl text-primary">
+            <Icon icon="mdi:rocket-launch-outline" />
+          </span>
+        </DottedMesh>
+      </GalleryThumb>
 
-      <a
-        href="#/invert-card"
-        className="group flex flex-col overflow-hidden rounded-lg border border-on-light-border transition-colors duration-fast hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-      >
-        <div className="grid grid-cols-3 gap-2 bg-bg p-5">
+      <GalleryThumb href="#/invert-card" name="Invert Card" meta="dark → yellow on hover">
+        <div className="grid h-full grid-cols-3 items-center gap-2 p-5 pt-16">
           {INVERT_CARD_ITEMS.map((c) => (
             <Card key={c.title} variant="invert" className="flex items-center justify-center p-4">
               <CardIcon className="mb-0">
@@ -1599,11 +1610,7 @@ const cards: DocEntry = {
             </Card>
           ))}
         </div>
-        <div className="flex items-center justify-between px-4 py-3">
-          <span className="font-heading text-sm font-bold text-on-light">Invert Card</span>
-          <span className="text-xs text-on-light-dim">dark → yellow</span>
-        </div>
-      </a>
+      </GalleryThumb>
     </div>
   ),
 };
