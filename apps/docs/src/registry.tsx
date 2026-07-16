@@ -1660,7 +1660,7 @@ const pricingCard: DocEntry = {
       title: 'Three plans (featured middle)',
       description: 'The middle plan is highlighted in yellow and raised; the others lift on hover.',
       render: () => (
-        <div className="grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-3 md:items-center">
+        <div className="grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-3 md:items-stretch">
           {PRICING_PLANS.map((p) => (
             <PricingTile key={p.name} plan={p} />
           ))}
