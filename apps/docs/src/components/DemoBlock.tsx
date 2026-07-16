@@ -2,14 +2,26 @@ import * as React from 'react';
 import type { Demo } from '../registry';
 import { CodeBlock } from './CodeBlock';
 
+type Lang = 'react' | 'html' | 'prompt';
+const LANG_LABEL: Record<Lang, string> = { react: 'React', html: 'HTML / CSS', prompt: 'Prompt' };
+const LANG_SYNTAX: Record<Lang, string> = { react: 'tsx', html: 'markup', prompt: 'markdown' };
+
 /** One demo: title, description, and a Preview / Code tab pair (shadcn-style).
-    When a demo has a framework-free equivalent (`codeHtml`), the Code panel
-    gets a React / HTML CSS toggle. */
+    The Code panel gains a React | HTML/CSS | Prompt toggle for whichever the
+    demo provides (`codeHtml`, `codePrompt`). */
 export function DemoBlock({ demo }: { demo: Demo }) {
   const [tab, setTab] = React.useState<'preview' | 'code'>('preview');
-  const [lang, setLang] = React.useState<'react' | 'html'>('react');
+  const [lang, setLang] = React.useState<Lang>('react');
   const tone = demo.tone ?? 'dark';
-  const hasHtml = Boolean(demo.codeHtml);
+
+  const langs: Lang[] = [
+    'react',
+    ...(demo.codeHtml ? (['html'] as const) : []),
+    ...(demo.codePrompt ? (['prompt'] as const) : []),
+  ];
+  const active = langs.includes(lang) ? lang : 'react';
+  const codeFor = (l: Lang) =>
+    l === 'html' ? demo.codeHtml! : l === 'prompt' ? demo.codePrompt! : demo.code;
 
   return (
     <section className="flex flex-col gap-3">
@@ -55,28 +67,24 @@ export function DemoBlock({ demo }: { demo: Demo }) {
           </div>
         ) : (
           <div className="flex flex-col gap-2 p-3">
-            {hasHtml && (
+            {langs.length > 1 && (
               <div className="inline-flex self-start rounded border border-on-light-border p-0.5">
-                {(['react', 'html'] as const).map((l) => (
+                {langs.map((l) => (
                   <button
                     key={l}
                     type="button"
                     onClick={() => setLang(l)}
                     className={
                       'rounded-sm px-3 py-1 text-xs font-semibold transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary ' +
-                      (lang === l ? 'bg-primary text-bg' : 'text-on-light-muted hover:text-on-light')
+                      (active === l ? 'bg-primary text-bg' : 'text-on-light-muted hover:text-on-light')
                     }
                   >
-                    {l === 'react' ? 'React' : 'HTML / CSS'}
+                    {LANG_LABEL[l]}
                   </button>
                 ))}
               </div>
             )}
-            {hasHtml && lang === 'html' ? (
-              <CodeBlock code={demo.codeHtml!} language="markup" />
-            ) : (
-              <CodeBlock code={demo.code} />
-            )}
+            <CodeBlock code={codeFor(active)} language={LANG_SYNTAX[active]} />
           </div>
         )}
       </div>

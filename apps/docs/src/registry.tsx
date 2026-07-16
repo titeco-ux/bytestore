@@ -55,6 +55,9 @@ export interface Demo {
   /** Framework-free (HTML/CSS/JS, byte_design_kit classes) equivalent. Shows a
       React / HTML CSS toggle in the Code panel when set. */
   codeHtml?: string;
+  /** A natural-language prompt to regenerate the component with an AI. Adds a
+      "Prompt" option to the Code panel. */
+  codePrompt?: string;
   /** Preview canvas tone. Byte is dark-first, so default is dark. */
   tone?: 'dark' | 'light';
   /** Fill the preview panel edge-to-edge (no padding). */
@@ -73,6 +76,8 @@ export interface DocEntry {
   demos: Demo[];
   /** Long-form documentation body (rendered instead of demos). */
   body?: () => React.ReactNode;
+  /** Routable but hidden from the sidebar (reached via a gallery thumbnail). */
+  hidden?: boolean;
 }
 
 /* ========================================================== Getting started */
@@ -1203,18 +1208,138 @@ const icosahedron: DocEntry = {
 
 /* ============================================================ All Components */
 
+/** Shared content for the ByteNana Card (used by the detail page + thumbnail). */
+const BYTE_CARD_ITEMS = [
+  {
+    icon: 'mdi:account-group-outline',
+    title: 'In your stack',
+    text: 'Engineers who slot into your tools and ship from week one.',
+  },
+  {
+    icon: 'mdi:rocket-launch-outline',
+    title: 'Ship faster',
+    text: 'Senior, architect-reviewed delivery — from MVP to enterprise.',
+  },
+  {
+    icon: 'mdi:shield-check-outline',
+    title: 'Vetted talent',
+    text: 'A high bar, full US-hours overlap, and real ownership.',
+  },
+];
+
+const bytenanaCard: DocEntry = {
+  slug: 'bytenana-card',
+  name: 'ByteNana Card',
+  category: 'Cards',
+  drawer: 'All Components',
+  hidden: true,
+  status: 'new',
+  description:
+    'Our first card component: a responsive 3-card row built from the Card molecule — each card an icon, a title and a paragraph. Defaults to 3 per row; add more <Card> items and they wrap to the next row.',
+  importLine: "import { Card, CardIcon, CardTitle, CardDescription, Icon } from '@bytenana/ui';",
+  demos: [
+    {
+      title: '3-card row',
+      description: 'Icon + title + paragraph. 3 across on desktop, stacking down to 1 on mobile.',
+      render: () => (
+        <div className="grid w-full max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+          {BYTE_CARD_ITEMS.map((c) => (
+            <Card key={c.title}>
+              <CardIcon>
+                <Icon icon={c.icon} />
+              </CardIcon>
+              <CardTitle>{c.title}</CardTitle>
+              <CardDescription>{c.text}</CardDescription>
+            </Card>
+          ))}
+        </div>
+      ),
+      code: `<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+  <Card>
+    <CardIcon><Icon icon="mdi:account-group-outline" /></CardIcon>
+    <CardTitle>In your stack</CardTitle>
+    <CardDescription>Engineers who slot into your tools and ship from week one.</CardDescription>
+  </Card>
+  <Card>
+    <CardIcon><Icon icon="mdi:rocket-launch-outline" /></CardIcon>
+    <CardTitle>Ship faster</CardTitle>
+    <CardDescription>Senior, architect-reviewed delivery — from MVP to enterprise.</CardDescription>
+  </Card>
+  <Card>
+    <CardIcon><Icon icon="mdi:shield-check-outline" /></CardIcon>
+    <CardTitle>Vetted talent</CardTitle>
+    <CardDescription>A high bar, full US-hours overlap, and real ownership.</CardDescription>
+  </Card>
+  {/* add more <Card> items — they wrap to the next row automatically */}
+</div>`,
+      codeHtml: `<!-- byte_design_kit: .card-grid.card-grid--3 + .card -->
+<div class="card-grid card-grid--3">
+  <div class="card">
+    <span class="card-icon"><iconify-icon icon="mdi:account-group-outline"></iconify-icon></span>
+    <h3>In your stack</h3>
+    <p>Engineers who slot into your tools and ship from week one.</p>
+  </div>
+  <div class="card">
+    <span class="card-icon"><iconify-icon icon="mdi:rocket-launch-outline"></iconify-icon></span>
+    <h3>Ship faster</h3>
+    <p>Senior, architect-reviewed delivery — from MVP to enterprise.</p>
+  </div>
+  <div class="card">
+    <span class="card-icon"><iconify-icon icon="mdi:shield-check-outline"></iconify-icon></span>
+    <h3>Vetted talent</h3>
+    <p>A high bar, full US-hours overlap, and real ownership.</p>
+  </div>
+  <!-- add more .card items — they wrap to the next row -->
+</div>`,
+      codePrompt: `Build a responsive card row in the ByteNana design system (dark-first).
+Default to 3 cards per row; adding more cards wraps them to the next row.
+
+Each card has:
+- a yellow line icon (top),
+- a bold IBM Plex Sans title,
+- a muted Inter paragraph.
+
+Style: cards are surface #161A1C on a #0F1112 background, 16px radius, 1px
+border rgba(255,255,255,0.08) that turns yellow (#F2B705) on hover. The only
+accent colour is the yellow icon. 8-pt spacing, 16px gap. Body text is Inter,
+titles are IBM Plex Sans. Respect prefers-reduced-motion.
+
+Expose an \`items\` array of { icon, title, text } and render one card each.`,
+    },
+  ],
+};
+
 const cards: DocEntry = {
   slug: 'cards',
   name: 'Cards',
   category: 'Cards',
   drawer: 'All Components',
-  status: 'wip',
   description:
-    'A scratch space for new / experimental card components. Empty for now — we drop random components here as we build them.',
+    'A gallery of card components. Click a thumbnail to open the component, preview it, and copy it as React, HTML/CSS or a prompt.',
   demos: [],
   body: () => (
-    <div className="flex min-h-[440px] items-center justify-center rounded-lg border border-on-light-border bg-bg">
-      <p className="font-body text-sm text-dim">Cards will appear here.</p>
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <a
+        href="#/bytenana-card"
+        className="group flex flex-col overflow-hidden rounded-lg border border-on-light-border transition-colors duration-fast hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+      >
+        <div className="flex items-stretch gap-2 bg-bg p-5">
+          {BYTE_CARD_ITEMS.map((c) => (
+            <div key={c.title} className="flex-1 rounded-md border border-border bg-surface p-2.5">
+              <span className="text-sm text-primary">
+                <Icon icon={c.icon} />
+              </span>
+              <div className="mt-2 h-1.5 w-3/4 rounded bg-white/25" />
+              <div className="mt-1.5 h-1 w-full rounded bg-white/10" />
+              <div className="mt-1 h-1 w-2/3 rounded bg-white/10" />
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center justify-between px-4 py-3">
+          <span className="font-heading text-sm font-bold text-on-light">ByteNana Card</span>
+          <span className="text-xs text-on-light-dim">3-card row</span>
+        </div>
+      </a>
     </div>
   ),
 };
@@ -1244,8 +1369,9 @@ export const registry: DocEntry[] = [
   // Components (backgrounds), nested in Design System
   icosahedron,
   dottedMesh,
-  // All Components (scratch)
+  // All Components (gallery + hidden detail pages)
   cards,
+  bytenanaCard,
 ];
 
 /** Sidebar drawer order. */

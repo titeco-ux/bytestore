@@ -54,7 +54,7 @@ export function Sidebar({ activeSlug, onNavigate }: SidebarProps) {
 
       <nav className="flex flex-col gap-2 px-3 pb-10">
         {drawerOrder.map((drawer) => {
-          const entries = registry.filter((e) => drawerOf(e) === drawer);
+          const entries = registry.filter((e) => drawerOf(e) === drawer && !e.hidden);
           if (entries.length === 0) return null;
           const isOpen = open.has(drawer);
 
