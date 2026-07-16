@@ -1291,20 +1291,41 @@ const bytenanaCard: DocEntry = {
   </div>
   <!-- add more .card items — they wrap to the next row -->
 </div>`,
-      codePrompt: `Build a responsive card row in the ByteNana design system (dark-first).
-Default to 3 cards per row; adding more cards wraps them to the next row.
+      codePrompt: `Build a self-contained, responsive "feature card row" component. Assume no
+design system or CSS framework is installed — specify everything inline. It can
+be React (Tailwind or plain CSS) or plain HTML/CSS; keep it dependency-light.
 
-Each card has:
-- a yellow line icon (top),
-- a bold IBM Plex Sans title,
-- a muted Inter paragraph.
+LAYOUT
+- A grid of cards. Columns: 1 on mobile, 2 at >=640px, 3 at >=768px. Gap: 16px.
+- Take an "items" array of { icon, title, text } and render one card each, so
+  adding items wraps them onto new rows. Default content is 3 items.
 
-Style: cards are surface #161A1C on a #0F1112 background, 16px radius, 1px
-border rgba(255,255,255,0.08) that turns yellow (#F2B705) on hover. The only
-accent colour is the yellow icon. 8-pt spacing, 16px gap. Body text is Inter,
-titles are IBM Plex Sans. Respect prefers-reduced-motion.
+EACH CARD
+- Vertical stack: icon on top, then title, then paragraph.
+- Padding: 24px top/bottom, 32px left/right.
+- Background: #161A1C. Border: 1px solid rgba(255,255,255,0.08). Radius: 16px.
+- Hover: border color becomes rgba(242,183,5,0.35). Transition border-color over
+  200ms with easing cubic-bezier(0.22, 1, 0.36, 1). No scaling or movement.
 
-Expose an \`items\` array of { icon, title, text } and render one card each.`,
+ICON
+- ~24px, color #F2B705, with 16px space below. Any icon set / inline SVG.
+
+TITLE
+- Font "IBM Plex Sans", sans-serif; weight 700; size 18px; color #FCFCFC;
+  8px space below.
+
+PARAGRAPH
+- Font "Inter", sans-serif; weight 400; size 14px; line-height 1.6;
+  color rgba(252,252,252,0.55).
+
+CONTEXT / RULES
+- Designed for a dark page background: #0F1112.
+- The amber #F2B705 is the ONLY accent and appears only on the icon and the
+  hover border — never as body text.
+- Spacing follows an 8-pt grid. Respect prefers-reduced-motion (keep transitions
+  subtle / none when reduced).
+- Load the fonts (IBM Plex Sans 400/700, Inter 400) from Google Fonts or
+  self-host.`,
     },
   ],
 };
