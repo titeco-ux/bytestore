@@ -5,6 +5,7 @@ import { CodeBlock } from './components/CodeBlock';
 import {
   Badge,
   Button,
+  cn,
   Card,
   CardIcon,
   CardTitle,
@@ -1563,6 +1564,200 @@ RULES
   ],
 };
 
+const PRICING_PLANS = [
+  {
+    name: 'Starter',
+    price: '$50',
+    period: '/hr',
+    desc: 'One senior engineer, embedded in your team.',
+    features: ['Full US-hours overlap', 'Architect-reviewed', 'Weekly demos'],
+    cta: 'Book a call',
+    featured: false,
+  },
+  {
+    name: 'Team',
+    price: '$100k',
+    period: '/yr',
+    desc: 'A senior pod that ships end to end.',
+    features: ['2–4 engineers', 'Dedicated lead', 'Full US overlap', 'Architect-reviewed'],
+    cta: 'Book a call',
+    featured: true,
+  },
+  {
+    name: 'Scale',
+    price: 'Custom',
+    period: '',
+    desc: 'Multiple pods, enterprise delivery.',
+    features: ['5+ engineers', 'SLAs & security review', 'Dedicated PM'],
+    cta: 'Talk to us',
+    featured: false,
+  },
+];
+
+function PricingTile({ plan }: { plan: (typeof PRICING_PLANS)[number] }) {
+  const f = plan.featured;
+  return (
+    <div
+      className={cn(
+        'flex flex-col rounded-lg border p-8 transition-[border-color,transform] duration-fast ease-byte',
+        f
+          ? 'border-primary bg-primary text-bg shadow-md md:-translate-y-2'
+          : 'border-border bg-surface hover:-translate-y-1 hover:border-border-hover',
+      )}
+    >
+      <p
+        className={cn(
+          'font-heading text-xs font-bold uppercase tracking-[0.12em]',
+          f ? 'text-bg/70' : 'text-primary',
+        )}
+      >
+        {plan.name}
+      </p>
+      <p className={cn('mt-3 font-heading text-4xl font-extrabold', f ? 'text-bg' : 'text-foreground')}>
+        {plan.price}
+        {plan.period && (
+          <span className={cn('text-base font-semibold', f ? 'text-bg/70' : 'text-muted')}>
+            {plan.period}
+          </span>
+        )}
+      </p>
+      <p className={cn('mt-2 text-sm leading-relaxed', f ? 'text-bg/80' : 'text-muted')}>{plan.desc}</p>
+      <ul className="mt-6 flex flex-1 flex-col gap-2">
+        {plan.features.map((feat) => (
+          <li key={feat} className="flex items-center gap-2 text-sm">
+            <span className={cn('text-base leading-none', f ? 'text-bg' : 'text-primary')}>
+              <Icon icon="mdi:check-circle" />
+            </span>
+            <span className={f ? 'text-bg/90' : 'text-foreground'}>{feat}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-8">
+        {f ? (
+          <Button full className="border-bg bg-bg text-primary hover:border-surface hover:bg-surface">
+            {plan.cta}
+          </Button>
+        ) : (
+          <Button full>{plan.cta}</Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const pricingCard: DocEntry = {
+  slug: 'pricing-card',
+  name: 'Pricing Card',
+  category: 'Cards',
+  drawer: 'All Components',
+  hidden: true,
+  status: 'new',
+  description:
+    'A pricing table — three plan cards with the featured (middle) plan filled yellow. Each card has a plan name, price, description, a checklist of features, and a CTA. Non-featured cards lift on hover.',
+  importLine: "import { Button, Icon } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'Three plans (featured middle)',
+      description: 'The middle plan is highlighted in yellow and raised; the others lift on hover.',
+      render: () => (
+        <div className="grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-3 md:items-center">
+          {PRICING_PLANS.map((p) => (
+            <PricingTile key={p.name} plan={p} />
+          ))}
+        </div>
+      ),
+      code: `const plans = [
+  { name: 'Starter', price: '$50',  period: '/hr', desc: '…', features: ['…'], cta: 'Book a call' },
+  { name: 'Team',    price: '$100k', period: '/yr', desc: '…', features: ['…'], cta: 'Book a call', featured: true },
+  { name: 'Scale',   price: 'Custom', period: '',   desc: '…', features: ['…'], cta: 'Talk to us' },
+];
+
+<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+  {plans.map((p) => (
+    <div key={p.name} className={p.featured
+      ? 'flex flex-col rounded-lg border border-primary bg-primary p-8 text-bg shadow-md md:-translate-y-2'
+      : 'flex flex-col rounded-lg border border-border bg-surface p-8 hover:-translate-y-1 hover:border-border-hover'}>
+      <p className="font-heading text-xs font-bold uppercase tracking-widest">{p.name}</p>
+      <p className="mt-3 font-heading text-4xl font-extrabold">{p.price}<span className="text-base">{p.period}</span></p>
+      <p className="mt-2 text-sm">{p.desc}</p>
+      <ul className="mt-6 flex-1 space-y-2 text-sm">
+        {p.features.map((f) => (
+          <li key={f} className="flex items-center gap-2"><Icon icon="mdi:check-circle" /> {f}</li>
+        ))}
+      </ul>
+      {/* featured card uses a dark button so it reads on yellow */}
+      <Button full className="mt-8">{p.cta}</Button>
+    </div>
+  ))}
+</div>`,
+      codeHtml: `<!-- .pricing-grid / .pricing-card (+ --featured) from byte_design_kit -->
+<div class="pricing-grid">
+  <div class="pricing-card">
+    <h3>Starter</h3>
+    <p style="font-family:var(--font-heading);font-weight:800;font-size:var(--text-4xl)">$50<span style="font-size:var(--text-base);color:var(--color-text-muted)">/hr</span></p>
+    <p>One senior engineer, embedded in your team.</p>
+    <ul>
+      <li>Full US-hours overlap</li>
+      <li>Architect-reviewed</li>
+      <li>Weekly demos</li>
+    </ul>
+    <a class="btn btn-primary btn-full" href="#book">Book a call</a>
+  </div>
+
+  <div class="pricing-card pricing-card--featured">
+    <h3>Team</h3>
+    <p style="font-family:var(--font-heading);font-weight:800;font-size:var(--text-4xl)">$100k<span>/yr</span></p>
+    <p>A senior pod that ships end to end.</p>
+    <ul><li>2–4 engineers</li><li>Dedicated lead</li><li>Full US overlap</li></ul>
+    <a class="btn btn-primary btn-full" href="#book">Book a call</a>
+  </div>
+
+  <div class="pricing-card">
+    <h3>Scale</h3>
+    <p style="font-family:var(--font-heading);font-weight:800;font-size:var(--text-4xl)">Custom</p>
+    <p>Multiple pods, enterprise delivery.</p>
+    <ul><li>5+ engineers</li><li>SLAs &amp; security review</li><li>Dedicated PM</li></ul>
+    <a class="btn btn-secondary btn-full" href="#book">Talk to us</a>
+  </div>
+</div>`,
+      codePrompt: `Build a self-contained pricing table (a row of plan cards). Assume no design
+system or framework — specify everything inline. React (Tailwind or CSS) or
+plain HTML/CSS.
+
+LAYOUT
+- A grid of plan cards: 1 column on mobile, 3 at >=768px. Gap 24px.
+- Take a "plans" array of { name, price, period, desc, features[], cta, featured }.
+- Sits on a dark page background #0F1112.
+
+EACH CARD
+- Background #161A1C, 1px border rgba(255,255,255,0.08), radius 16px, padding 32px.
+  A vertical flex column so CTAs align at the bottom.
+- Plan name: "IBM Plex Sans" 700, 12px, uppercase, letter-spacing 0.12em, color
+  #F2B705.
+- Price: "IBM Plex Sans" 800, 36px, #FCFCFC; the period suffix (e.g. "/hr") is
+  16px and muted rgba(252,252,252,0.55).
+- Description: "Inter" 14px, rgba(252,252,252,0.55).
+- Features: a checklist; each row a small amber #F2B705 check icon + "Inter" 14px
+  label #FCFCFC. 8px gap.
+- CTA button (full width): amber fill #F2B705, dark text #0F1112, radius 8px,
+  padding 12px 24px, "Inter" 600; hover lightens to #F5C84A.
+- Hover (non-featured): the card lifts up 4px (translateY(-4px)) and its border
+  turns rgba(242,183,5,0.35). Transition ~200ms, easing cubic-bezier(0.22,1,0.36,1).
+
+FEATURED PLAN (the middle one)
+- Background solid amber #F2B705; ALL its text/icons become dark #0F1112 so they
+  read on yellow. Its CTA becomes a DARK button (fill #0F1112, amber text
+  #F2B705). It is raised slightly (translateY(-8px)) and carries a shadow
+  0 4px 16px rgba(0,0,0,0.5) to stand out. No hover lift needed.
+
+RULES
+- Amber #F2B705 is the only accent (except the featured card, which is amber).
+  8-pt spacing. Respect prefers-reduced-motion (drop the lifts). Load fonts
+  IBM Plex Sans 700/800 and Inter 400/600.`,
+    },
+  ],
+};
+
 const cards: DocEntry = {
   slug: 'cards',
   name: 'Cards',
@@ -1611,6 +1806,26 @@ const cards: DocEntry = {
           ))}
         </div>
       </GalleryThumb>
+
+      <GalleryThumb href="#/pricing-card" name="Pricing Card" meta="featured plan highlighted">
+        <div className="grid h-full grid-cols-3 items-center gap-2 p-5 pt-16">
+          {PRICING_PLANS.map((p) => (
+            <div
+              key={p.name}
+              className={cn(
+                'flex flex-col gap-1.5 rounded-md border p-2.5',
+                p.featured ? 'border-primary bg-primary' : 'border-border bg-surface',
+              )}
+            >
+              <div className={cn('h-1.5 w-2/3 rounded', p.featured ? 'bg-bg/60' : 'bg-primary/70')} />
+              <div className={cn('h-3 w-3/4 rounded', p.featured ? 'bg-bg/80' : 'bg-white/25')} />
+              <div className={cn('mt-1 h-1 w-full rounded', p.featured ? 'bg-bg/40' : 'bg-white/10')} />
+              <div className={cn('h-1 w-full rounded', p.featured ? 'bg-bg/40' : 'bg-white/10')} />
+              <div className={cn('mt-1.5 h-2.5 w-full rounded', p.featured ? 'bg-bg' : 'bg-primary')} />
+            </div>
+          ))}
+        </div>
+      </GalleryThumb>
     </div>
   ),
 };
@@ -1645,6 +1860,7 @@ export const registry: DocEntry[] = [
   bytenanaCard,
   meshCard,
   invertCard,
+  pricingCard,
 ];
 
 /** Sidebar drawer order. */
