@@ -24,6 +24,10 @@ import {
   Section,
   SectionLabel,
   Separator,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
   Text,
   Textarea,
   Timeline,
@@ -1177,6 +1181,111 @@ const carousel: DocEntry = {
   ],
 };
 
+const tabs: DocEntry = {
+  slug: 'tabs',
+  name: 'Tabs',
+  category: 'Molecules',
+  status: 'new',
+  description:
+    'Accessible tabs — a tablist that switches panels, with roving tabindex and arrow-key navigation. Two looks: underline (default) and segment (option boxes).',
+  importLine: "import { Tabs, TabList, Tab, TabPanel } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'Underline',
+      description: 'The default. Click or use ← → to switch; the panel updates.',
+      render: () => (
+        <Tabs defaultValue="overview" className="w-full max-w-lg">
+          <TabList aria-label="Sections">
+            <Tab value="overview">Overview</Tab>
+            <Tab value="specs">Specs</Tab>
+            <Tab value="reviews">Reviews</Tab>
+          </TabList>
+          <TabPanel value="overview">
+            <Text variant="muted">A senior team embedded in your stack, shipping from week one.</Text>
+          </TabPanel>
+          <TabPanel value="specs">
+            <Text variant="muted">Full US-hours overlap, architect-reviewed delivery.</Text>
+          </TabPanel>
+          <TabPanel value="reviews">
+            <Text variant="muted">“We were impressed with their flexibility and skills.”</Text>
+          </TabPanel>
+        </Tabs>
+      ),
+      code: `<Tabs defaultValue="overview">
+  <TabList aria-label="Sections">
+    <Tab value="overview">Overview</Tab>
+    <Tab value="specs">Specs</Tab>
+    <Tab value="reviews">Reviews</Tab>
+  </TabList>
+  <TabPanel value="overview">…</TabPanel>
+  <TabPanel value="specs">…</TabPanel>
+  <TabPanel value="reviews">…</TabPanel>
+</Tabs>`,
+      codeHtml: `<!-- .stack-tab / .stack-panel, driven by animations.js (module C) -->
+<div class="stack-tablist" role="tablist">
+  <button class="stack-tab is-active" role="tab">Overview</button>
+  <button class="stack-tab" role="tab">Specs</button>
+  <button class="stack-tab" role="tab">Reviews</button>
+</div>
+<div class="stack-panels">
+  <div class="stack-panel is-active" role="tabpanel">…</div>
+  <div class="stack-panel" role="tabpanel">…</div>
+  <div class="stack-panel" role="tabpanel">…</div>
+</div>`,
+      codePrompt: `Build a self-contained, accessible Tabs component. Assume no design system or
+framework — specify everything inline. React or plain HTML/CSS/JS.
+
+STRUCTURE
+- A tablist (role="tablist") of tab buttons (role="tab") and one panel per tab
+  (role="tabpanel"). Wire aria-selected on tabs, aria-controls -> panel id, and
+  aria-labelledby on panels -> tab id. Only the active panel is shown.
+
+KEYBOARD / FOCUS
+- Roving tabindex: the selected tab has tabindex=0, the rest tabindex=-1.
+- ArrowLeft/ArrowRight move between tabs (wrapping); Home/End jump to first/last;
+  moving focus also selects that tab.
+
+STYLE (underline look, on a dark #0F1112 page)
+- Tabs sit on a bottom border rgba(255,255,255,0.08). Each tab: "Inter" 500,
+  14px, padding 10px 16px, a 2px bottom border that is transparent when inactive.
+- Inactive tab text rgba(252,252,252,0.55); hover -> #FCFCFC.
+- Active tab: text #FCFCFC and the 2px bottom border becomes amber #F2B705.
+- Transition color/border ~200ms, easing cubic-bezier(0.22, 1, 0.36, 1).
+- Panels: 16px top margin, body text "Inter" 14px rgba(252,252,252,0.55).
+
+Also support a "segment" variant: tabs are equal-width rounded boxes (1px border
+rgba(255,255,255,0.08)); the selected box gets an amber border #F2B705 and a
+10%-amber fill. 8-pt spacing. Respect prefers-reduced-motion.`,
+    },
+    {
+      title: 'Segment',
+      description: 'Option-box style — good inside cards and pickers.',
+      render: () => (
+        <Tabs defaultValue="month" variant="segment" className="w-full max-w-sm">
+          <TabList aria-label="Billing period">
+            <Tab value="month">Monthly</Tab>
+            <Tab value="year">Yearly</Tab>
+          </TabList>
+          <TabPanel value="month">
+            <Text variant="muted">Billed monthly. Cancel anytime.</Text>
+          </TabPanel>
+          <TabPanel value="year">
+            <Text variant="muted">Billed yearly — save 20%.</Text>
+          </TabPanel>
+        </Tabs>
+      ),
+      code: `<Tabs defaultValue="month" variant="segment">
+  <TabList aria-label="Billing period">
+    <Tab value="month">Monthly</Tab>
+    <Tab value="year">Yearly</Tab>
+  </TabList>
+  <TabPanel value="month">Billed monthly.</TabPanel>
+  <TabPanel value="year">Billed yearly — save 20%.</TabPanel>
+</Tabs>`,
+    },
+  ],
+};
+
 /* =============================================================== Backgrounds */
 
 const dottedMesh: DocEntry = {
@@ -1758,6 +1867,129 @@ RULES
   ],
 };
 
+const PRICING_TABS_PLANS = [
+  { value: 'starter', title: 'Starter', subtitle: '1 engineer', price: '$50', period: '/hr', blurb: 'One senior engineer, embedded in your team.' },
+  { value: 'team', title: 'Team', subtitle: '2–4 engineers', price: '$100k', period: '/yr', blurb: 'A senior pod that ships end to end.' },
+  { value: 'scale', title: 'Scale', subtitle: '5+ engineers', price: 'Custom', period: '', blurb: 'Multiple pods, enterprise delivery.' },
+];
+
+const pricingTabs: DocEntry = {
+  slug: 'pricing-tabs',
+  name: 'Pricing Tabs',
+  category: 'Cards',
+  drawer: 'All Components',
+  hidden: true,
+  status: 'new',
+  description:
+    'A pricing card with tabs inside: three selectable options (each a title + little subtitle). Picking one reveals its price and blurb; one CTA button below. Built with the Tabs molecule (segment variant).',
+  importLine: "import { Tabs, TabList, Tab, TabPanel, Button } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'Tabbed pricing card',
+      description: 'Select an option; the price + blurb switch. ← → keys work too.',
+      render: () => (
+        <div className="w-full max-w-sm rounded-lg border border-border bg-surface p-8">
+          <Tabs defaultValue="team" variant="segment">
+            <TabList aria-label="Plan">
+              {PRICING_TABS_PLANS.map((p) => (
+                <Tab key={p.value} value={p.value} className="text-center">
+                  <span className="block font-heading text-sm font-bold">{p.title}</span>
+                  <span className="mt-0.5 block text-[11px] text-muted">{p.subtitle}</span>
+                </Tab>
+              ))}
+            </TabList>
+            {PRICING_TABS_PLANS.map((p) => (
+              <TabPanel key={p.value} value={p.value}>
+                <p className="font-heading text-3xl font-extrabold text-foreground">
+                  {p.price}
+                  {p.period && <span className="text-base font-semibold text-muted">{p.period}</span>}
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-muted">{p.blurb}</p>
+              </TabPanel>
+            ))}
+          </Tabs>
+          <Button full className="mt-6">
+            Book a call
+          </Button>
+        </div>
+      ),
+      code: `const plans = [
+  { value: 'starter', title: 'Starter', subtitle: '1 engineer',    price: '$50',   period: '/hr', blurb: '…' },
+  { value: 'team',    title: 'Team',    subtitle: '2–4 engineers', price: '$100k', period: '/yr', blurb: '…' },
+  { value: 'scale',   title: 'Scale',   subtitle: '5+ engineers',  price: 'Custom', period: '',   blurb: '…' },
+];
+
+<div className="max-w-sm rounded-lg border border-border bg-surface p-8">
+  <Tabs defaultValue="team" variant="segment">
+    <TabList aria-label="Plan">
+      {plans.map((p) => (
+        <Tab key={p.value} value={p.value} className="text-center">
+          <span className="block font-heading text-sm font-bold">{p.title}</span>
+          <span className="mt-0.5 block text-[11px] text-muted">{p.subtitle}</span>
+        </Tab>
+      ))}
+    </TabList>
+    {plans.map((p) => (
+      <TabPanel key={p.value} value={p.value}>
+        <p className="font-heading text-3xl font-extrabold text-foreground">
+          {p.price}<span className="text-base text-muted">{p.period}</span>
+        </p>
+        <p className="mt-1 text-sm text-muted">{p.blurb}</p>
+      </TabPanel>
+    ))}
+  </Tabs>
+  <Button full className="mt-6">Book a call</Button>
+</div>`,
+      codeHtml: `<!-- card + segmented tabs (.stack-tab / .stack-panel via animations.js) -->
+<div class="card">
+  <div class="stack-tablist" role="tablist" style="display:grid;grid-auto-flow:column;gap:8px">
+    <button class="stack-tab is-active" role="tab">
+      <strong>Team</strong><br /><small>2–4 engineers</small>
+    </button>
+    <button class="stack-tab" role="tab"><strong>Starter</strong><br /><small>1 engineer</small></button>
+    <button class="stack-tab" role="tab"><strong>Scale</strong><br /><small>5+ engineers</small></button>
+  </div>
+  <div class="stack-panels">
+    <div class="stack-panel is-active" role="tabpanel">
+      <p style="font-family:var(--font-heading);font-weight:800;font-size:var(--text-3xl)">$100k<span>/yr</span></p>
+      <p>A senior pod that ships end to end.</p>
+    </div>
+    <!-- one .stack-panel per option -->
+  </div>
+  <a class="btn btn-primary btn-full" href="#book" style="margin-top:1.5rem">Book a call</a>
+</div>`,
+      codePrompt: `Build a self-contained pricing card with tabs inside. Assume no design system or
+framework — specify everything inline. React or HTML/CSS/JS.
+
+CARD
+- Background #161A1C, 1px border rgba(255,255,255,0.08), radius 16px, padding 32px,
+  max-width ~360px, on a dark #0F1112 page.
+
+TABS (three selectable options, one row)
+- Equal-width option boxes in a single row, 8px gap. Each option shows a bold
+  title ("IBM Plex Sans", 14px, #FCFCFC) and a little subtitle below it
+  ("Inter", 11px, rgba(252,252,252,0.55)).
+- Each box: 1px border rgba(255,255,255,0.08), radius 8px, padding 12px.
+- Selected box: border amber #F2B705 with a 10% amber fill. Only one selected at
+  a time. Fully accessible: role tablist/tab, aria-selected, roving tabindex,
+  ArrowLeft/Right + Home/End keyboard navigation.
+
+PANEL (below the tabs, switches with selection)
+- Shows the selected option's price — "IBM Plex Sans" 800, 30px, #FCFCFC, with a
+  muted period suffix (e.g. "/yr", 16px, rgba(252,252,252,0.55)) — and a one-line
+  blurb ("Inter" 14px, muted). 16px above.
+
+BUTTON (one, below the panel)
+- Full-width CTA: amber fill #F2B705, dark text #0F1112, radius 8px, padding
+  12px 24px, "Inter" 600; hover lightens to #F5C84A. 24px above.
+
+RULES
+- Amber #F2B705 is the only accent. 8-pt spacing. Respect prefers-reduced-motion.
+  Load fonts IBM Plex Sans 700/800 and Inter 400/600.`,
+    },
+  ],
+};
+
 const cards: DocEntry = {
   slug: 'cards',
   name: 'Cards',
@@ -1826,6 +2058,27 @@ const cards: DocEntry = {
           ))}
         </div>
       </GalleryThumb>
+
+      <GalleryThumb href="#/pricing-tabs" name="Pricing Tabs" meta="tabs to pick a plan">
+        <div className="flex h-full flex-col justify-center gap-3 p-5 pt-16">
+          <div className="grid grid-cols-3 gap-1.5">
+            {PRICING_TABS_PLANS.map((p, i) => (
+              <div
+                key={p.value}
+                className={cn(
+                  'rounded border p-2 text-center',
+                  i === 1 ? 'border-primary bg-primary/10' : 'border-border',
+                )}
+              >
+                <div className={cn('mx-auto h-1.5 w-8 rounded', i === 1 ? 'bg-primary' : 'bg-white/25')} />
+                <div className="mx-auto mt-1 h-1 w-6 rounded bg-white/10" />
+              </div>
+            ))}
+          </div>
+          <div className="h-4 w-1/2 rounded bg-white/25" />
+          <div className="h-2.5 w-full rounded bg-primary" />
+        </div>
+      </GalleryThumb>
     </div>
   ),
 };
@@ -1852,6 +2105,7 @@ export const registry: DocEntry[] = [
   projectCard,
   timeline,
   carousel,
+  tabs,
   // Components (backgrounds), nested in Design System
   icosahedron,
   dottedMesh,
@@ -1861,6 +2115,7 @@ export const registry: DocEntry[] = [
   meshCard,
   invertCard,
   pricingCard,
+  pricingTabs,
 ];
 
 /** Sidebar drawer order. */
