@@ -1601,7 +1601,7 @@ function PricingTile({ plan }: { plan: (typeof PRICING_PLANS)[number] }) {
       className={cn(
         'flex flex-col rounded-lg border p-8 transition-[border-color,transform] duration-fast ease-byte',
         f
-          ? 'border-primary bg-primary text-bg shadow-md md:-translate-y-2'
+          ? 'border-primary bg-primary text-bg hover:-translate-y-1'
           : 'border-border bg-surface hover:-translate-y-1 hover:border-border-hover',
       )}
     >
@@ -1675,7 +1675,7 @@ const pricingCard: DocEntry = {
 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
   {plans.map((p) => (
     <div key={p.name} className={p.featured
-      ? 'flex flex-col rounded-lg border border-primary bg-primary p-8 text-bg shadow-md md:-translate-y-2'
+      ? 'flex flex-col rounded-lg border border-primary bg-primary p-8 text-bg transition-transform hover:-translate-y-1'
       : 'flex flex-col rounded-lg border border-border bg-surface p-8 hover:-translate-y-1 hover:border-border-hover'}>
       <p className="font-heading text-xs font-bold uppercase tracking-widest">{p.name}</p>
       <p className="mt-3 font-heading text-4xl font-extrabold">{p.price}<span className="text-base">{p.period}</span></p>
@@ -1747,8 +1747,8 @@ EACH CARD
 FEATURED PLAN (the middle one)
 - Background solid amber #F2B705; ALL its text/icons become dark #0F1112 so they
   read on yellow. Its CTA becomes a DARK button (fill #0F1112, amber text
-  #F2B705). It is raised slightly (translateY(-8px)) and carries a shadow
-  0 4px 16px rgba(0,0,0,0.5) to stand out. No hover lift needed.
+  #F2B705). The yellow fill alone makes it stand out — it behaves like the other
+  cards, lifting on hover (translateY(-4px)); no permanent raise or shadow.
 
 RULES
 - Amber #F2B705 is the only accent (except the featured card, which is amber).
