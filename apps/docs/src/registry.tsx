@@ -35,13 +35,17 @@ import {
    ========================================================================== */
 
 /** Top-level collapsible groups in the sidebar. */
-export type Drawer = 'Design System' | 'Components';
+export type Drawer = 'Design System' | 'All Components';
 
 export type Category =
   | 'Getting started'
   | 'Atoms'
   | 'Molecules'
-  | 'Patterns';
+  | 'Components'
+  | 'Cards';
+
+/** Drawers that list their items flat (no category sub-headers). */
+export const FLAT_DRAWERS: Drawer[] = ['All Components'];
 
 export interface Demo {
   title: string;
@@ -1142,8 +1146,8 @@ const carousel: DocEntry = {
 const dottedMesh: DocEntry = {
   slug: 'dotted-mesh',
   name: 'Dotted Mesh',
-  category: 'Patterns',
-  drawer: 'Components',
+  category: 'Components',
+  drawer: 'Design System',
   status: 'new',
   description:
     'The signature drifting dot-grid. Wrap any content and DottedMesh renders an animated dotted layer behind it. Two offset radial-gradient grids drift on the mesh-wave keyframe, gated on prefers-reduced-motion.',
@@ -1171,8 +1175,8 @@ const dottedMesh: DocEntry = {
 const icosahedron: DocEntry = {
   slug: 'icosahedron',
   name: 'Icosahedron',
-  category: 'Patterns',
-  drawer: 'Components',
+  category: 'Components',
+  drawer: 'Design System',
   status: 'new',
   description:
     "The hero's tumbling wireframe polyhedron (canvas): vertices / faces spun on a yaw + tilt, silhouette edges solid with a glow, interior edges dashed, front faces tinted. Switch the face count (4 tetra / 8 octa / 20 icosa / 80 geodesic), and nest anything as children — text or a flat SVG icon — pinned at the centre (the hero puts the logo there). Controls cover size, opacity, edge thickness, radius, spin speed, and what's inside.",
@@ -1197,6 +1201,24 @@ const icosahedron: DocEntry = {
   ],
 };
 
+/* ============================================================ All Components */
+
+const cards: DocEntry = {
+  slug: 'cards',
+  name: 'Cards',
+  category: 'Cards',
+  drawer: 'All Components',
+  status: 'wip',
+  description:
+    'A scratch space for new / experimental card components. Empty for now — we drop random components here as we build them.',
+  demos: [],
+  body: () => (
+    <div className="flex min-h-[440px] items-center justify-center rounded-lg border border-on-light-border bg-bg">
+      <p className="font-body text-sm text-dim">Cards will appear here.</p>
+    </div>
+  ),
+};
+
 /* ------------------------------------------------------------------ Assembly */
 
 export const registry: DocEntry[] = [
@@ -1219,20 +1241,23 @@ export const registry: DocEntry[] = [
   projectCard,
   timeline,
   carousel,
-  // Backgrounds
+  // Components (backgrounds), nested in Design System
   icosahedron,
   dottedMesh,
+  // All Components (scratch)
+  cards,
 ];
 
 /** Sidebar drawer order. */
-export const drawerOrder: Drawer[] = ['Design System', 'Components'];
+export const drawerOrder: Drawer[] = ['Design System', 'All Components'];
 
 /** Category order within a drawer. */
 export const categoryOrder: Category[] = [
   'Getting started',
   'Atoms',
   'Molecules',
-  'Patterns',
+  'Components',
+  'Cards',
 ];
 
 /** A missing drawer means the entry belongs to the Design System. */

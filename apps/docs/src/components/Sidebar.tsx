@@ -4,6 +4,7 @@ import {
   drawerOrder,
   categoryOrder,
   drawerOf,
+  FLAT_DRAWERS,
   type Drawer,
   type Category,
 } from '../registry';
@@ -67,24 +68,39 @@ export function Sidebar({ activeSlug, onNavigate }: SidebarProps) {
               />
               {isOpen && (
                 <div className="mb-2 flex flex-col gap-4 pt-1">
-                  {categoryOrder.map((category) => {
-                    const items = entries.filter((e) => e.category === category);
-                    if (items.length === 0) return null;
-                    return (
-                      <div key={category} className="flex flex-col gap-1">
-                        <CategoryLabel category={category} />
-                        {items.map((entry) => (
-                          <NavItem
-                            key={entry.slug}
-                            name={entry.name}
-                            status={entry.status}
-                            active={entry.slug === activeSlug}
-                            onClick={() => onNavigate(entry.slug)}
-                          />
-                        ))}
-                      </div>
-                    );
-                  })}
+                  {FLAT_DRAWERS.includes(drawer) ? (
+                    // Flat: list items directly, no category sub-headers.
+                    <div className="flex flex-col gap-1">
+                      {entries.map((entry) => (
+                        <NavItem
+                          key={entry.slug}
+                          name={entry.name}
+                          status={entry.status}
+                          active={entry.slug === activeSlug}
+                          onClick={() => onNavigate(entry.slug)}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    categoryOrder.map((category) => {
+                      const items = entries.filter((e) => e.category === category);
+                      if (items.length === 0) return null;
+                      return (
+                        <div key={category} className="flex flex-col gap-1">
+                          <CategoryLabel category={category} />
+                          {items.map((entry) => (
+                            <NavItem
+                              key={entry.slug}
+                              name={entry.name}
+                              status={entry.status}
+                              active={entry.slug === activeSlug}
+                              onClick={() => onNavigate(entry.slug)}
+                            />
+                          ))}
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               )}
             </div>
