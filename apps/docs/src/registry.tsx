@@ -2063,18 +2063,26 @@ RULES
 };
 
 const TESTIMONIALS = [
-  { name: 'Sarah Chen', role: 'CEO · Series-A startup', quote: 'We were impressed with their flexibility and skills — they felt like part of our team from day one.' },
-  { name: 'Marco Silva', role: 'CTO · HealthTech', quote: 'They slotted into our stack and shipped in week one. Senior work, no hand-holding.' },
-  { name: 'Priya Nair', role: 'Founder · PropTech', quote: 'Senior calibre, full US-hours overlap, half the cost. Exactly what we needed to scale.' },
+  { name: 'Sarah Chen', role: 'CEO · Series-A', quote: 'They felt like part of our team from day one.', avatar: 'https://randomuser.me/api/portraits/women/44.jpg' },
+  { name: 'Marco Silva', role: 'CTO · HealthTech', quote: 'Slotted into our stack and shipped in week one.', avatar: 'https://randomuser.me/api/portraits/men/32.jpg' },
+  { name: 'Priya Nair', role: 'Founder · PropTech', quote: 'Senior calibre, full US overlap, half the cost.', avatar: 'https://randomuser.me/api/portraits/women/68.jpg' },
+  { name: 'David Cohen', role: 'VP Eng · FinTech', quote: 'Architect-level work, zero hand-holding.', avatar: 'https://randomuser.me/api/portraits/men/75.jpg' },
+  { name: 'Elena Ruiz', role: 'Head of Product', quote: 'Fast, senior, and genuinely easy to work with.', avatar: 'https://randomuser.me/api/portraits/women/12.jpg' },
+  { name: 'Tom Becker', role: 'Founder · SaaS', quote: 'Shipped our MVP weeks ahead of schedule.', avatar: 'https://randomuser.me/api/portraits/men/54.jpg' },
+  { name: 'Aisha Khan', role: 'CTO · MarTech', quote: 'The overlap made it feel like one team.', avatar: 'https://randomuser.me/api/portraits/women/90.jpg' },
+  { name: 'James Park', role: 'Delivery Lead', quote: 'Reliable delivery, clean code, great comms.', avatar: 'https://randomuser.me/api/portraits/men/22.jpg' },
 ];
 
 function TestimonialCard({ t }: { t: (typeof TESTIMONIALS)[number] }) {
   return (
-    <div className="rounded-lg border border-border bg-surface p-6">
+    <div className="flex flex-col rounded-lg border border-border bg-surface p-6">
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-2 text-xl text-muted">
-          <Icon icon="mdi:account" />
-        </span>
+        <img
+          src={t.avatar}
+          alt=""
+          className="h-10 w-10 shrink-0 rounded-full object-cover"
+          loading="lazy"
+        />
         <div>
           <p className="font-heading text-sm font-bold text-foreground">{t.name}</p>
           <p className="text-xs text-muted">{t.role}</p>
@@ -2093,89 +2101,100 @@ const testimonialCarousel: DocEntry = {
   hidden: true,
   status: 'new',
   description:
-    'A testimonial card — a little person avatar with a name and subtitle on top, and a short quote under it — presented as a carousel of cards (auto-advances; arrows, dots and swipe).',
-  importLine: "import { Carousel, Icon } from '@bytenana/ui';",
+    'A testimonial card — a person photo with a name and subtitle on top, and a short quote under it. Shown four-up in a carousel (dots + swipe, no arrows) that pages through the testimonials.',
+  importLine: "import { Carousel } from '@bytenana/ui';",
   demos: [
     {
-      title: 'Testimonial carousel',
-      description: 'One card at a time. Hover to pause, or use the arrows / dots / swipe.',
-      render: () => (
-        <Carousel className="w-full max-w-md" aria-label="Testimonials">
-          {TESTIMONIALS.map((t) => (
-            <div key={t.name} className="px-1 pb-2">
-              <TestimonialCard t={t} />
-            </div>
-          ))}
-        </Carousel>
-      ),
-      code: `const testimonials = [
-  { name: 'Sarah Chen',  role: 'CEO · Series-A startup', quote: '…' },
-  { name: 'Marco Silva', role: 'CTO · HealthTech',       quote: '…' },
-  { name: 'Priya Nair',  role: 'Founder · PropTech',     quote: '…' },
-];
+      title: 'Four-up testimonial carousel',
+      description: 'Four cards per view; the dots page through. Hover to pause; swipe works too.',
+      render: () => {
+        const pages = [TESTIMONIALS.slice(0, 4), TESTIMONIALS.slice(4, 8)];
+        return (
+          <Carousel className="w-full" aria-label="Testimonials" showArrows={false}>
+            {pages.map((group, i) => (
+              <div
+                key={i}
+                className="grid grid-cols-1 gap-4 px-1 pb-2 sm:grid-cols-2 lg:grid-cols-4"
+              >
+                {group.map((t) => (
+                  <TestimonialCard key={t.name} t={t} />
+                ))}
+              </div>
+            ))}
+          </Carousel>
+        );
+      },
+      code: `const testimonials = [ /* { name, role, quote, avatar } … 8 people */ ];
+const pages = [testimonials.slice(0, 4), testimonials.slice(4, 8)];
 
-<Carousel aria-label="Testimonials">
-  {testimonials.map((t) => (
-    <div key={t.name} className="px-1 pb-2">
-      <div className="rounded-lg border border-border bg-surface p-6">
-        <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-2 text-xl text-muted">
-            <Icon icon="mdi:account" />
-          </span>
-          <div>
-            <p className="font-heading text-sm font-bold text-foreground">{t.name}</p>
-            <p className="text-xs text-muted">{t.role}</p>
+<Carousel aria-label="Testimonials" showArrows={false}>
+  {pages.map((group, i) => (
+    <div key={i} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {group.map((t) => (
+        <div key={t.name} className="flex flex-col rounded-lg border border-border bg-surface p-6">
+          <div className="flex items-center gap-3">
+            <img src={t.avatar} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover" />
+            <div>
+              <p className="font-heading text-sm font-bold text-foreground">{t.name}</p>
+              <p className="text-xs text-muted">{t.role}</p>
+            </div>
           </div>
+          <p className="mt-4 text-sm leading-relaxed text-muted">{t.quote}</p>
         </div>
-        <p className="mt-4 text-sm leading-relaxed text-muted">{t.quote}</p>
-      </div>
+      ))}
     </div>
   ))}
 </Carousel>`,
-      codeHtml: `<!-- .card + avatar circle, in a .steps-carousel (animations.js module D) -->
+      codeHtml: `<!-- 4 cards per slide in a .steps-carousel (animations.js module D); dots only -->
 <div class="steps steps-carousel steps-carousel--slide" id="tst-carousel">
   <div class="steps-viewport"><div class="steps-track">
     <div class="step is-active">
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:12px">
-          <span style="display:flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:9999px;background:var(--color-surface-2);color:var(--color-text-muted)">
-            <iconify-icon icon="mdi:account"></iconify-icon>
-          </span>
-          <div>
-            <p style="font-family:var(--font-heading);font-weight:700">Sarah Chen</p>
-            <p style="font-size:var(--text-xs);color:var(--color-text-muted)">CEO · Series-A startup</p>
+      <div class="card-grid card-grid--2-4">
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:12px">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""
+              style="width:40px;height:40px;border-radius:9999px;object-fit:cover" />
+            <div>
+              <p style="font-family:var(--font-heading);font-weight:700">Sarah Chen</p>
+              <p style="font-size:var(--text-xs);color:var(--color-text-muted)">CEO · Series-A</p>
+            </div>
           </div>
+          <p style="margin-top:1rem;font-size:var(--text-sm);color:var(--color-text-muted)">They felt like part of our team.</p>
         </div>
-        <p style="margin-top:1rem;font-size:var(--text-sm);color:var(--color-text-muted)">We were impressed with their flexibility and skills.</p>
+        <!-- 3 more .card items to fill the row of 4 -->
       </div>
     </div>
-    <!-- one .step per testimonial -->
+    <!-- one .step per page of 4 -->
   </div></div>
   <div class="steps-nav"><div class="steps-dots" role="tablist">
     <button class="steps-dot is-active" data-step="0"></button>
   </div></div>
 </div>`,
-      codePrompt: `Build a self-contained testimonial carousel. Assume no design system or
-framework — specify everything inline. React or HTML/CSS/JS.
+      codePrompt: `Build a self-contained testimonial carousel that shows FOUR cards per view.
+Assume no design system or framework — specify everything inline. React or
+HTML/CSS/JS.
 
 TESTIMONIAL CARD
 - Background #161A1C, 1px border rgba(255,255,255,0.08), radius 16px, padding 24px.
   On a dark #0F1112 page.
-- Header row (avatar + text, aligned center, 12px gap):
-  - Avatar: a 40px circle, background #1E2325, containing a person silhouette
-    icon (~20px, color rgba(252,252,252,0.55)). (Swap for a photo if available.)
-  - To its right: the person's name ("IBM Plex Sans" 700, 14px, #FCFCFC) and,
-    under it, a subtitle/role ("Inter" 12px, rgba(252,252,252,0.55)).
-- Below the header (16px gap): a short quote ("Inter" 14px, line-height 1.6,
+- Header row (avatar + text, center-aligned, 12px gap):
+  - Avatar: a 40px circular PHOTO (object-fit: cover, border-radius 50%). Use a
+    real person photo (e.g. from randomuser.me or your own).
+  - To its right: name ("IBM Plex Sans" 700, 14px, #FCFCFC) and, under it, a
+    role/subtitle ("Inter" 12px, rgba(252,252,252,0.55)).
+- Below (16px gap): a short quote ("Inter" 14px, line-height 1.6,
   rgba(252,252,252,0.55)).
 
-CAROUSEL
-- Show one card at a time. Auto-advance every ~4.5s, pausing on hover/focus.
-- Dot navigation (active dot widens to amber #F2B705), prev/next arrow buttons,
-  swipe, and Left/Right arrow keys. Accessible: role="group"
-  aria-roledescription="carousel"; slides role="group"
-  aria-roledescription="slide"; hide off-screen slides from assistive tech.
-- Slide transition ~500ms, easing cubic-bezier(0.22, 1, 0.36, 1).
+CAROUSEL (four-up, paged)
+- Show FOUR cards at once in a responsive grid: 4 columns on desktop, 2 on
+  tablet, 1 on mobile, 16px gap. Group the testimonials into pages of four and
+  slide between pages.
+- Navigation: DOT navigation only — NO arrow buttons. Active dot widens to amber
+  #F2B705. Support swipe and Left/Right arrow keys. Auto-advance every ~4.5s,
+  pausing on hover/focus.
+- Accessible: role="group" aria-roledescription="carousel"; hide off-screen
+  pages from assistive tech. Slide transition ~500ms, easing
+  cubic-bezier(0.22, 1, 0.36, 1).
 
 RULES
 - Amber #F2B705 is the only accent (active dot). 8-pt spacing. Respect
