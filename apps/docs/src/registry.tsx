@@ -1884,6 +1884,7 @@ function PricingTabsDemo() {
 
   return (
     <div className="w-full max-w-sm rounded-lg border border-border bg-surface p-8">
+      <h3 className="mb-5 font-heading text-xl font-bold text-foreground">Choose your plan</h3>
       <Tabs value={period} onValueChange={(v) => setPeriod(v as 'monthly' | 'yearly')} variant="segment">
         <TabList aria-label="Billing period">
           <Tab value="monthly">Monthly</Tab>
@@ -1956,6 +1957,7 @@ function PricingTabs() {
 
   return (
     <div className="max-w-sm rounded-lg border border-border bg-surface p-8">
+      <h3 className="mb-5 font-heading text-xl font-bold text-foreground">Choose your plan</h3>
       <Tabs value={period} onValueChange={setPeriod} variant="segment">
         <TabList aria-label="Billing period">
           <Tab value="monthly">Monthly</Tab>
@@ -2019,7 +2021,11 @@ CARD
 - Background #161A1C, 1px border rgba(255,255,255,0.08), radius 16px, padding 32px,
   max-width ~360px, on a dark #0F1112 page.
 
-BILLING TABS (top)
+HEADING (top)
+- A card title, e.g. "Choose your plan" — "IBM Plex Sans" 700, 20px, #FCFCFC,
+  20px space below it.
+
+BILLING TABS (below the heading)
 - Two equal-width tabs: "Monthly" and "Yearly", as a segmented control (a row of
   two rounded boxes, 1px border rgba(255,255,255,0.08), radius 8px). The selected
   tab gets an amber #F2B705 border and a 10%-amber fill. Accessible: role
