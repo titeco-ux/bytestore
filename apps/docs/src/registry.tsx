@@ -118,12 +118,14 @@ function GalleryThumb({
   return (
     <a
       href={href}
-      className="group relative block h-56 overflow-hidden rounded-lg border border-on-light-border transition-colors duration-fast hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+      className="group relative block h-72 overflow-hidden rounded-lg border border-on-light-border transition-colors duration-fast hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
     >
-      {/* full-bleed preview */}
-      <div className="absolute inset-0 bg-bg">{children}</div>
+      {/* full-bleed preview — the real component, centered */}
+      <div className="absolute inset-0 flex items-center justify-center overflow-hidden bg-bg">
+        {children}
+      </div>
       {/* legibility gradient behind the caption */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/85 via-black/55 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/90 via-black/60 to-transparent" />
       {/* caption on top */}
       <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-col gap-0.5 p-4">
         <span className="font-heading text-sm font-bold text-white">{name}</span>
@@ -1867,11 +1869,64 @@ RULES
   ],
 };
 
-const PRICING_TABS_PLANS = [
-  { value: 'starter', title: 'Starter', subtitle: '1 engineer', price: '$50', period: '/hr', blurb: 'One senior engineer, embedded in your team.' },
-  { value: 'team', title: 'Team', subtitle: '2–4 engineers', price: '$100k', period: '/yr', blurb: 'A senior pod that ships end to end.' },
-  { value: 'scale', title: 'Scale', subtitle: '5+ engineers', price: 'Custom', period: '', blurb: 'Multiple pods, enterprise delivery.' },
+const PT_PLANS = [
+  { id: 'free', name: 'Free', note: 'For trying things out.', monthly: '$0', yearly: '$0' },
+  { id: 'pro', name: 'Pro', note: 'For growing teams.', monthly: '$29', yearly: '$290' },
+  { id: 'business', name: 'Business', note: 'For scaling companies.', monthly: '$99', yearly: '$990' },
 ];
+
+/** Interactive: Monthly/Yearly tabs + three selectable price options + a CTA. */
+function PricingTabsDemo() {
+  const [period, setPeriod] = React.useState<'monthly' | 'yearly'>('monthly');
+  const [plan, setPlan] = React.useState('pro');
+  const per = period === 'monthly' ? '/mo' : '/yr';
+  const selected = PT_PLANS.find((p) => p.id === plan)!;
+
+  return (
+    <div className="w-full max-w-sm rounded-lg border border-border bg-surface p-8">
+      <Tabs value={period} onValueChange={(v) => setPeriod(v as 'monthly' | 'yearly')} variant="segment">
+        <TabList aria-label="Billing period">
+          <Tab value="monthly">Monthly</Tab>
+          <Tab value="yearly">Yearly</Tab>
+        </TabList>
+      </Tabs>
+
+      <div className="mt-5 flex flex-col gap-2">
+        {PT_PLANS.map((p) => {
+          const active = plan === p.id;
+          const price = period === 'monthly' ? p.monthly : p.yearly;
+          return (
+            <button
+              key={p.id}
+              type="button"
+              aria-pressed={active}
+              onClick={() => setPlan(p.id)}
+              className={cn(
+                'flex items-center justify-between rounded-md border p-3 text-left transition-colors duration-fast ease-byte focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+                active
+                  ? 'border-primary bg-primary/10'
+                  : 'border-border hover:border-border-hover',
+              )}
+            >
+              <span>
+                <span className="block font-heading text-sm font-bold text-foreground">{p.name}</span>
+                <span className="block text-xs text-muted">{p.note}</span>
+              </span>
+              <span className="font-heading text-lg font-extrabold text-foreground">
+                {price}
+                {p.id !== 'free' && <span className="text-xs font-semibold text-muted">{per}</span>}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <Button full className="mt-5">
+        Get {selected.name}
+      </Button>
+    </div>
+  );
+}
 
 const pricingTabs: DocEntry = {
   slug: 'pricing-tabs',
@@ -1881,107 +1936,109 @@ const pricingTabs: DocEntry = {
   hidden: true,
   status: 'new',
   description:
-    'A pricing card with tabs inside: three selectable options (each a title + little subtitle). Picking one reveals its price and blurb; one CTA button below. Built with the Tabs molecule (segment variant).',
-  importLine: "import { Tabs, TabList, Tab, TabPanel, Button } from '@bytenana/ui';",
+    'A pricing card with a Monthly / Yearly toggle (Tabs) and three selectable price options — Free, Pro and Business — whose prices switch with the period. The CTA reflects the chosen plan.',
+  importLine: "import { Tabs, TabList, Tab, Button } from '@bytenana/ui';",
   demos: [
     {
-      title: 'Tabbed pricing card',
-      description: 'Select an option; the price + blurb switch. ← → keys work too.',
-      render: () => (
-        <div className="w-full max-w-sm rounded-lg border border-border bg-surface p-8">
-          <Tabs defaultValue="team" variant="segment">
-            <TabList aria-label="Plan">
-              {PRICING_TABS_PLANS.map((p) => (
-                <Tab key={p.value} value={p.value} className="text-center">
-                  <span className="block font-heading text-sm font-bold">{p.title}</span>
-                  <span className="mt-0.5 block text-[11px] text-muted">{p.subtitle}</span>
-                </Tab>
-              ))}
-            </TabList>
-            {PRICING_TABS_PLANS.map((p) => (
-              <TabPanel key={p.value} value={p.value}>
-                <p className="font-heading text-3xl font-extrabold text-foreground">
-                  {p.price}
-                  {p.period && <span className="text-base font-semibold text-muted">{p.period}</span>}
-                </p>
-                <p className="mt-1 text-sm leading-relaxed text-muted">{p.blurb}</p>
-              </TabPanel>
-            ))}
-          </Tabs>
-          <Button full className="mt-6">
-            Book a call
-          </Button>
-        </div>
-      ),
+      title: 'Monthly / Yearly pricing',
+      description: 'Toggle the period (← →), pick a plan; the prices and CTA update.',
+      render: () => <PricingTabsDemo />,
       code: `const plans = [
-  { value: 'starter', title: 'Starter', subtitle: '1 engineer',    price: '$50',   period: '/hr', blurb: '…' },
-  { value: 'team',    title: 'Team',    subtitle: '2–4 engineers', price: '$100k', period: '/yr', blurb: '…' },
-  { value: 'scale',   title: 'Scale',   subtitle: '5+ engineers',  price: 'Custom', period: '',   blurb: '…' },
+  { id: 'free',     name: 'Free',     note: 'For trying things out.', monthly: '$0',  yearly: '$0'   },
+  { id: 'pro',      name: 'Pro',      note: 'For growing teams.',     monthly: '$29', yearly: '$290' },
+  { id: 'business', name: 'Business', note: 'For scaling companies.', monthly: '$99', yearly: '$990' },
 ];
 
-<div className="max-w-sm rounded-lg border border-border bg-surface p-8">
-  <Tabs defaultValue="team" variant="segment">
-    <TabList aria-label="Plan">
-      {plans.map((p) => (
-        <Tab key={p.value} value={p.value} className="text-center">
-          <span className="block font-heading text-sm font-bold">{p.title}</span>
-          <span className="mt-0.5 block text-[11px] text-muted">{p.subtitle}</span>
-        </Tab>
-      ))}
-    </TabList>
-    {plans.map((p) => (
-      <TabPanel key={p.value} value={p.value}>
-        <p className="font-heading text-3xl font-extrabold text-foreground">
-          {p.price}<span className="text-base text-muted">{p.period}</span>
-        </p>
-        <p className="mt-1 text-sm text-muted">{p.blurb}</p>
-      </TabPanel>
-    ))}
-  </Tabs>
-  <Button full className="mt-6">Book a call</Button>
-</div>`,
-      codeHtml: `<!-- card + segmented tabs (.stack-tab / .stack-panel via animations.js) -->
+function PricingTabs() {
+  const [period, setPeriod] = useState('monthly');
+  const [plan, setPlan] = useState('pro');
+  const per = period === 'monthly' ? '/mo' : '/yr';
+
+  return (
+    <div className="max-w-sm rounded-lg border border-border bg-surface p-8">
+      <Tabs value={period} onValueChange={setPeriod} variant="segment">
+        <TabList aria-label="Billing period">
+          <Tab value="monthly">Monthly</Tab>
+          <Tab value="yearly">Yearly</Tab>
+        </TabList>
+      </Tabs>
+
+      <div className="mt-5 flex flex-col gap-2">
+        {plans.map((p) => {
+          const price = period === 'monthly' ? p.monthly : p.yearly;
+          return (
+            <button key={p.id} onClick={() => setPlan(p.id)}
+              className={plan === p.id
+                ? 'flex items-center justify-between rounded-md border border-primary bg-primary/10 p-3'
+                : 'flex items-center justify-between rounded-md border border-border p-3 hover:border-border-hover'}>
+              <span>
+                <span className="block font-heading text-sm font-bold">{p.name}</span>
+                <span className="block text-xs text-muted">{p.note}</span>
+              </span>
+              <span className="font-heading text-lg font-extrabold">
+                {price}{p.id !== 'free' && <span className="text-xs text-muted">{per}</span>}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <Button full className="mt-5">Get {plans.find((p) => p.id === plan).name}</Button>
+    </div>
+  );
+}`,
+      codeHtml: `<!-- card + Monthly/Yearly segmented tabs (.stack-tab via animations.js) -->
 <div class="card">
   <div class="stack-tablist" role="tablist" style="display:grid;grid-auto-flow:column;gap:8px">
-    <button class="stack-tab is-active" role="tab">
-      <strong>Team</strong><br /><small>2–4 engineers</small>
+    <button class="stack-tab is-active" role="tab">Monthly</button>
+    <button class="stack-tab" role="tab">Yearly</button>
+  </div>
+
+  <!-- one selectable option per plan (JS swaps prices when the period changes) -->
+  <div style="display:flex;flex-direction:column;gap:8px;margin-top:1.25rem">
+    <button class="price-opt is-active" data-monthly="$0" data-yearly="$0">
+      <span><strong>Free</strong><br /><small>For trying things out.</small></span>
+      <span class="price">$0</span>
     </button>
-    <button class="stack-tab" role="tab"><strong>Starter</strong><br /><small>1 engineer</small></button>
-    <button class="stack-tab" role="tab"><strong>Scale</strong><br /><small>5+ engineers</small></button>
+    <button class="price-opt" data-monthly="$29" data-yearly="$290">
+      <span><strong>Pro</strong><br /><small>For growing teams.</small></span>
+      <span class="price">$29<small>/mo</small></span>
+    </button>
+    <button class="price-opt" data-monthly="$99" data-yearly="$990">
+      <span><strong>Business</strong><br /><small>For scaling companies.</small></span>
+      <span class="price">$99<small>/mo</small></span>
+    </button>
   </div>
-  <div class="stack-panels">
-    <div class="stack-panel is-active" role="tabpanel">
-      <p style="font-family:var(--font-heading);font-weight:800;font-size:var(--text-3xl)">$100k<span>/yr</span></p>
-      <p>A senior pod that ships end to end.</p>
-    </div>
-    <!-- one .stack-panel per option -->
-  </div>
-  <a class="btn btn-primary btn-full" href="#book" style="margin-top:1.5rem">Book a call</a>
+
+  <a class="btn btn-primary btn-full" href="#" style="margin-top:1.25rem">Get Pro</a>
 </div>`,
-      codePrompt: `Build a self-contained pricing card with tabs inside. Assume no design system or
-framework — specify everything inline. React or HTML/CSS/JS.
+      codePrompt: `Build a self-contained pricing card with a billing toggle. Assume no design
+system or framework — specify everything inline. React or HTML/CSS/JS.
 
 CARD
 - Background #161A1C, 1px border rgba(255,255,255,0.08), radius 16px, padding 32px,
   max-width ~360px, on a dark #0F1112 page.
 
-TABS (three selectable options, one row)
-- Equal-width option boxes in a single row, 8px gap. Each option shows a bold
-  title ("IBM Plex Sans", 14px, #FCFCFC) and a little subtitle below it
-  ("Inter", 11px, rgba(252,252,252,0.55)).
-- Each box: 1px border rgba(255,255,255,0.08), radius 8px, padding 12px.
-- Selected box: border amber #F2B705 with a 10% amber fill. Only one selected at
-  a time. Fully accessible: role tablist/tab, aria-selected, roving tabindex,
-  ArrowLeft/Right + Home/End keyboard navigation.
+BILLING TABS (top)
+- Two equal-width tabs: "Monthly" and "Yearly", as a segmented control (a row of
+  two rounded boxes, 1px border rgba(255,255,255,0.08), radius 8px). The selected
+  tab gets an amber #F2B705 border and a 10%-amber fill. Accessible: role
+  tablist/tab, aria-selected, roving tabindex, ArrowLeft/Right + Home/End.
 
-PANEL (below the tabs, switches with selection)
-- Shows the selected option's price — "IBM Plex Sans" 800, 30px, #FCFCFC, with a
-  muted period suffix (e.g. "/yr", 16px, rgba(252,252,252,0.55)) — and a one-line
-  blurb ("Inter" 14px, muted). 16px above.
+PRICE OPTIONS (three selectable rows below the tabs, 8px gap)
+- Each row is a selectable button showing, on the left, a bold plan name
+  ("IBM Plex Sans" 14px #FCFCFC) with a little subtitle under it ("Inter" 12px
+  rgba(252,252,252,0.55)); on the right, the price ("IBM Plex Sans" 800, 18px,
+  #FCFCFC) with a muted period suffix ("/mo" or "/yr", except the Free plan).
+- Plans: Free ($0 both periods), Pro ($29/mo or $290/yr), Business ($99/mo or
+  $990/yr). Switching the Monthly/Yearly tab swaps every price + suffix.
+- Row border 1px rgba(255,255,255,0.08), radius 8px, padding 12px. The SELECTED
+  row gets an amber #F2B705 border + 10%-amber fill. Only one selected at a time.
 
-BUTTON (one, below the panel)
-- Full-width CTA: amber fill #F2B705, dark text #0F1112, radius 8px, padding
-  12px 24px, "Inter" 600; hover lightens to #F5C84A. 24px above.
+BUTTON (one, full width, below)
+- Amber fill #F2B705, dark text #0F1112, radius 8px, padding 12px 24px, "Inter"
+  600; hover lightens to #F5C84A. Its label reflects the selected plan
+  (e.g. "Get Pro"). 20px above.
 
 RULES
 - Amber #F2B705 is the only accent. 8-pt spacing. Respect prefers-reduced-motion.
@@ -2001,82 +2058,66 @@ const cards: DocEntry = {
   body: () => (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <GalleryThumb href="#/bytenana-card" name="ByteNana Card" meta="3-card row">
-        <div className="flex h-full items-center gap-2 p-5 pt-16">
-          {BYTE_CARD_ITEMS.map((c) => (
-            <div key={c.title} className="flex-1 rounded-md border border-border bg-surface p-2.5">
-              <span className="text-sm text-primary">
-                <Icon icon={c.icon} />
-              </span>
-              <div className="mt-2 h-1.5 w-3/4 rounded bg-white/25" />
-              <div className="mt-1.5 h-1 w-full rounded bg-white/10" />
-              <div className="mt-1 h-1 w-2/3 rounded bg-white/10" />
-            </div>
-          ))}
+        <div className="pointer-events-none w-[640px] shrink-0 scale-[0.4]">
+          <div className="grid grid-cols-3 gap-4">
+            {BYTE_CARD_ITEMS.map((c) => (
+              <Card key={c.title}>
+                <CardIcon>
+                  <Icon icon={c.icon} />
+                </CardIcon>
+                <CardTitle>{c.title}</CardTitle>
+                <CardDescription>{c.text}</CardDescription>
+              </Card>
+            ))}
+          </div>
         </div>
       </GalleryThumb>
 
       <GalleryThumb href="#/mesh-card" name="Mesh Card" meta="animated background">
-        <DottedMesh
-          variant="dots-light"
-          ignoreReducedMotion
-          className="flex h-full w-full items-center justify-center bg-surface"
-        >
-          <span className="text-4xl text-primary">
-            <Icon icon="mdi:rocket-launch-outline" />
-          </span>
-        </DottedMesh>
+        <div className="pointer-events-none w-[360px] shrink-0 scale-[0.8]">
+          <DottedMesh
+            variant="dots-light"
+            ignoreReducedMotion
+            className="rounded-lg border border-border bg-surface px-8 py-10 text-center"
+          >
+            <span className="mb-4 flex justify-center text-3xl text-primary">
+              <Icon icon="mdi:rocket-launch-outline" />
+            </span>
+            <h3 className="mb-2 font-heading text-xl font-bold text-foreground">Ship with a senior team</h3>
+            <p className="text-sm leading-relaxed text-muted">A dark card with a drifting dot-mesh.</p>
+          </DottedMesh>
+        </div>
       </GalleryThumb>
 
       <GalleryThumb href="#/invert-card" name="Invert Card" meta="dark → yellow on hover">
-        <div className="grid h-full grid-cols-3 items-center gap-2 p-5 pt-16">
-          {INVERT_CARD_ITEMS.map((c) => (
-            <Card key={c.title} variant="invert" className="flex items-center justify-center p-4">
-              <CardIcon className="mb-0">
-                <Icon icon={c.icon} />
-              </CardIcon>
-            </Card>
-          ))}
+        <div className="pointer-events-none w-[640px] shrink-0 scale-[0.4]">
+          <div className="grid grid-cols-3 gap-4">
+            {INVERT_CARD_ITEMS.map((c) => (
+              <Card key={c.title} variant="invert">
+                <CardIcon>
+                  <Icon icon={c.icon} />
+                </CardIcon>
+                <CardTitle>{c.title}</CardTitle>
+                <CardDescription>{c.text}</CardDescription>
+              </Card>
+            ))}
+          </div>
         </div>
       </GalleryThumb>
 
       <GalleryThumb href="#/pricing-card" name="Pricing Card" meta="featured plan highlighted">
-        <div className="grid h-full grid-cols-3 items-center gap-2 p-5 pt-16">
-          {PRICING_PLANS.map((p) => (
-            <div
-              key={p.name}
-              className={cn(
-                'flex flex-col gap-1.5 rounded-md border p-2.5',
-                p.featured ? 'border-primary bg-primary' : 'border-border bg-surface',
-              )}
-            >
-              <div className={cn('h-1.5 w-2/3 rounded', p.featured ? 'bg-bg/60' : 'bg-primary/70')} />
-              <div className={cn('h-3 w-3/4 rounded', p.featured ? 'bg-bg/80' : 'bg-white/25')} />
-              <div className={cn('mt-1 h-1 w-full rounded', p.featured ? 'bg-bg/40' : 'bg-white/10')} />
-              <div className={cn('h-1 w-full rounded', p.featured ? 'bg-bg/40' : 'bg-white/10')} />
-              <div className={cn('mt-1.5 h-2.5 w-full rounded', p.featured ? 'bg-bg' : 'bg-primary')} />
-            </div>
-          ))}
+        <div className="pointer-events-none w-[760px] shrink-0 scale-[0.34]">
+          <div className="grid grid-cols-3 gap-6">
+            {PRICING_PLANS.map((p) => (
+              <PricingTile key={p.name} plan={p} />
+            ))}
+          </div>
         </div>
       </GalleryThumb>
 
-      <GalleryThumb href="#/pricing-tabs" name="Pricing Tabs" meta="tabs to pick a plan">
-        <div className="flex h-full flex-col justify-center gap-3 p-5 pt-16">
-          <div className="grid grid-cols-3 gap-1.5">
-            {PRICING_TABS_PLANS.map((p, i) => (
-              <div
-                key={p.value}
-                className={cn(
-                  'rounded border p-2 text-center',
-                  i === 1 ? 'border-primary bg-primary/10' : 'border-border',
-                )}
-              >
-                <div className={cn('mx-auto h-1.5 w-8 rounded', i === 1 ? 'bg-primary' : 'bg-white/25')} />
-                <div className="mx-auto mt-1 h-1 w-6 rounded bg-white/10" />
-              </div>
-            ))}
-          </div>
-          <div className="h-4 w-1/2 rounded bg-white/25" />
-          <div className="h-2.5 w-full rounded bg-primary" />
+      <GalleryThumb href="#/pricing-tabs" name="Pricing Tabs" meta="Monthly / Yearly + plans">
+        <div className="pointer-events-none w-[360px] shrink-0 scale-[0.8]">
+          <PricingTabsDemo />
         </div>
       </GalleryThumb>
     </div>
