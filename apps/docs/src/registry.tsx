@@ -1421,6 +1421,118 @@ RULES
   ],
 };
 
+const INVERT_CARD_ITEMS = [
+  {
+    icon: 'mdi:application-brackets-outline',
+    title: 'Frontend',
+    text: 'Reactive, accessible UIs that scale from MVP to enterprise.',
+  },
+  {
+    icon: 'mdi:server-outline',
+    title: 'Backend',
+    text: 'Secure, high-load APIs and services built to last.',
+  },
+  {
+    icon: 'mdi:brain',
+    title: 'AI',
+    text: 'RAG pipelines and LLM agents, in production.',
+  },
+];
+
+const invertCard: DocEntry = {
+  slug: 'invert-card',
+  name: 'Invert Card',
+  category: 'Cards',
+  drawer: 'All Components',
+  hidden: true,
+  status: 'new',
+  description:
+    'A card that flips from dark to solid yellow and lifts a little on hover — the "full-stack expertise" cards. Built from the Card molecule’s invert variant; the content turns dark for contrast as the fill turns yellow.',
+  importLine: "import { Card, CardIcon, CardTitle, CardDescription, Icon } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'Invert-on-hover row',
+      description: 'Hover a card: it fills yellow, its content turns dark, and it rises 4px.',
+      render: () => (
+        <div className="grid w-full max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+          {INVERT_CARD_ITEMS.map((c) => (
+            <Card key={c.title} variant="invert">
+              <CardIcon>
+                <Icon icon={c.icon} />
+              </CardIcon>
+              <CardTitle>{c.title}</CardTitle>
+              <CardDescription>{c.text}</CardDescription>
+            </Card>
+          ))}
+        </div>
+      ),
+      code: `<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+  <Card variant="invert">
+    <CardIcon><Icon icon="mdi:application-brackets-outline" /></CardIcon>
+    <CardTitle>Frontend</CardTitle>
+    <CardDescription>Reactive, accessible UIs that scale from MVP to enterprise.</CardDescription>
+  </Card>
+  <Card variant="invert">
+    <CardIcon><Icon icon="mdi:server-outline" /></CardIcon>
+    <CardTitle>Backend</CardTitle>
+    <CardDescription>Secure, high-load APIs and services built to last.</CardDescription>
+  </Card>
+  <Card variant="invert">
+    <CardIcon><Icon icon="mdi:brain" /></CardIcon>
+    <CardTitle>AI</CardTitle>
+    <CardDescription>RAG pipelines and LLM agents, in production.</CardDescription>
+  </Card>
+</div>`,
+      codeHtml: `<!-- .card.card--invert (byte_design_kit) -->
+<div class="card-grid card-grid--3">
+  <div class="card card--invert">
+    <span class="card-icon"><iconify-icon icon="mdi:application-brackets-outline"></iconify-icon></span>
+    <h3>Frontend</h3>
+    <p>Reactive, accessible UIs that scale from MVP to enterprise.</p>
+  </div>
+  <div class="card card--invert">
+    <span class="card-icon"><iconify-icon icon="mdi:server-outline"></iconify-icon></span>
+    <h3>Backend</h3>
+    <p>Secure, high-load APIs and services built to last.</p>
+  </div>
+  <div class="card card--invert">
+    <span class="card-icon"><iconify-icon icon="mdi:brain"></iconify-icon></span>
+    <h3>AI</h3>
+    <p>RAG pipelines and LLM agents, in production.</p>
+  </div>
+</div>`,
+      codePrompt: `Build a self-contained "invert on hover" feature card (and a responsive row of
+them). Assume no design system or framework — specify everything inline. React
+(Tailwind or CSS) or plain HTML/CSS.
+
+LAYOUT
+- A grid: 1 column on mobile, 2 at >=640px, 3 at >=768px. Gap 16px.
+- Take an "items" array of { icon, title, text }; render one card each.
+
+CARD (resting state)
+- Background #161A1C. Border 1px solid rgba(255,255,255,0.08). Radius 16px.
+  Padding 32px. Content stacked: icon, title, paragraph.
+- Icon ~24px color #F2B705. Title "IBM Plex Sans" 700 18px #FCFCFC.
+  Paragraph "Inter" 400 14px line-height 1.6 rgba(252,252,252,0.55).
+- Sits on a dark page background #0F1112.
+
+HOVER (the signature behaviour)
+- Background transitions to SOLID amber #F2B705 and the border to #F2B705.
+- The whole card lifts up 4px (translateY(-4px)) and gains a shadow
+  0 4px 16px rgba(0,0,0,0.5).
+- At the same time ALL content flips to dark #0F1112 (icon, title, paragraph)
+  so it stays legible on yellow.
+- Transition ~250ms, easing cubic-bezier(0.22, 1, 0.36, 1). Animate background,
+  border, color, box-shadow and transform together.
+
+RULES
+- Amber #F2B705 is the only accent. 8-pt spacing.
+- Respect prefers-reduced-motion: keep the color inversion but drop the lift.
+- Load fonts IBM Plex Sans 400/700 and Inter 400.`,
+    },
+  ],
+};
+
 const cards: DocEntry = {
   slug: 'cards',
   name: 'Cards',
@@ -1473,6 +1585,25 @@ const cards: DocEntry = {
           <span className="text-xs text-on-light-dim">animated bg</span>
         </div>
       </a>
+
+      <a
+        href="#/invert-card"
+        className="group flex flex-col overflow-hidden rounded-lg border border-on-light-border transition-colors duration-fast hover:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+      >
+        <div className="grid grid-cols-3 gap-2 bg-bg p-5">
+          {INVERT_CARD_ITEMS.map((c) => (
+            <Card key={c.title} variant="invert" className="flex items-center justify-center p-4">
+              <CardIcon className="mb-0">
+                <Icon icon={c.icon} />
+              </CardIcon>
+            </Card>
+          ))}
+        </div>
+        <div className="flex items-center justify-between px-4 py-3">
+          <span className="font-heading text-sm font-bold text-on-light">Invert Card</span>
+          <span className="text-xs text-on-light-dim">dark → yellow</span>
+        </div>
+      </a>
     </div>
   ),
 };
@@ -1506,6 +1637,7 @@ export const registry: DocEntry[] = [
   cards,
   bytenanaCard,
   meshCard,
+  invertCard,
 ];
 
 /** Sidebar drawer order. */
