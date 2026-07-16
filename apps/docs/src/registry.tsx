@@ -48,6 +48,9 @@ export interface Demo {
   description?: string;
   render: () => React.ReactNode;
   code: string;
+  /** Framework-free (HTML/CSS/JS, byte_design_kit classes) equivalent. Shows a
+      React / HTML CSS toggle in the Code panel when set. */
+  codeHtml?: string;
   /** Preview canvas tone. Byte is dark-first, so default is dark. */
   tone?: 'dark' | 'light';
   /** Fill the preview panel edge-to-edge (no padding). */
@@ -196,6 +199,123 @@ export function Hero() {
   ),
 };
 
+const cssJs: DocEntry = {
+  slug: 'css-js',
+  name: 'CSS & JS',
+  category: 'Getting started',
+  description:
+    'Prefer plain HTML/CSS/JS? Every component has a framework-free equivalent — the byte_design_kit classes, no build step. The Code tab on each component page has a React / HTML CSS toggle showing both.',
+  demos: [],
+  body: () => (
+    <>
+      <DocP>
+        The React library and the framework-free kit are two faces of the <strong>same design
+        system</strong> — they share the exact same tokens, so a <DocCode>.btn-primary</DocCode>{' '}
+        and a <DocCode>&lt;Button&gt;</DocCode> look identical. Use whichever fits the project:
+        React for apps, plain HTML/CSS/JS for static sites and drop-ins.
+      </DocP>
+
+      <DocH2>1. Include the stylesheets + scripts</DocH2>
+      <DocP>
+        No build step. Load the tokens, base and components CSS in order, then Iconify and the
+        interactions script. (Add <DocCode>work.css</DocCode> for case-study components like
+        ProjectCard and Timeline.)
+      </DocP>
+      <CodeBlock
+        language="html"
+        code={`<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/work.css">   <!-- case-study components -->
+
+<script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+<script src="js/animations.js"></script>       <!-- carousels, globe, forms, nav -->`}
+      />
+
+      <DocH2>2. Use the documented classes</DocH2>
+      <DocP>
+        Each component page has a <strong>React / HTML CSS</strong> toggle in its Code tab — flip
+        it to copy the framework-free markup. A quick map:
+      </DocP>
+      <CodeBlock
+        language="html"
+        code={`Button      → <a class="btn btn-primary">…</a>
+Typography  → <h1>…</h1> · <p class="eyebrow"> · <em> (yellow highlight)
+Card        → <div class="card card--invert">…</div>
+Form        → <div class="form-group"><label><input></div>
+Section     → <section class="section--light | section--brand">
+Dotted mesh → <section class="section-mesh">
+Icosahedron → <div class="cta-hub" data-globe data-shape="ico">
+ProjectCard → <a class="work-feature">   Timeline → <ol class="arch-flow">
+Carousel    → <div class="steps-carousel steps-carousel--slide">`}
+      />
+
+      <DocH2>3. Re-skin the same way</DocH2>
+      <DocP>
+        Edit <DocCode>tokens.css</DocCode> (the CSS-variable mirror of{' '}
+        <DocCode>@bytenana/tokens</DocCode>) — colours, fonts, spacing all cascade. Keep the two
+        token files in sync so React and CSS/JS never drift.
+      </DocP>
+
+      <DocP>
+        The full framework-free kit (with <DocCode>starter.html</DocCode> and{' '}
+        <DocCode>case-study.html</DocCode> templates) ships in the{' '}
+        <DocCode>byte_design_kit</DocCode> skill — see the Skill page.
+      </DocP>
+    </>
+  ),
+};
+
+const skillPage: DocEntry = {
+  slug: 'skill',
+  name: 'Skill',
+  category: 'Getting started',
+  description:
+    'The byte_design_kit skill packages this whole system for AI agents (Claude Code). Ask for "the Byte look" and it scaffolds or drops the system in — as the framework-free kit or, for React, as Bytestore.',
+  demos: [],
+  body: () => (
+    <>
+      <DocH2>What it is</DocH2>
+      <DocP>
+        <DocCode>byte_design_kit</DocCode> is a Claude Code skill: a portable, dark-first,
+        yellow-accented design system extracted from the ByteNana site. It ships the tokens,
+        components and signature animations, and teaches the agent how to build with them.
+      </DocP>
+
+      <DocH2>When it triggers</DocH2>
+      <DocP>
+        Mentions of “ByteNana design”, “the Byte look”, “byte design kit”, reusing the landing-page
+        style, or building a site that should match nearshore.bytenana.tech.
+      </DocP>
+
+      <DocH2>Modes</DocH2>
+      <DocP>
+        <strong>Build</strong> — scaffold a new site/landing page from the system.{' '}
+        <strong>Apply</strong> — drop the system into an existing project.{' '}
+        <strong>React (§5)</strong> — for React/Next apps, use the <strong>Bytestore</strong>{' '}
+        component library (this repo) instead of hand-porting HTML — same tokens, same look.
+      </DocP>
+
+      <DocH2>Where it lives</DocH2>
+      <DocP>
+        Skill source: <DocCode>github.com/ByteNana/The-Byte-EngiNana</DocCode> (branch{' '}
+        <DocCode>byte_design_kit</DocCode>) — <DocCode>SKILL.md</DocCode> (agent instructions),{' '}
+        <DocCode>reference.md</DocCode> (full catalog, incl. §12 the React library), and{' '}
+        <DocCode>assets/</DocCode> (the ready-to-use css/js). The React library is this repo,{' '}
+        <DocCode>github.com/titeco-ux/bytestore</DocCode>.
+      </DocP>
+
+      <DocH2>Hard rules it enforces</DocH2>
+      <DocP>
+        Edit tokens to re-skin (never hard-code). Dark base, off-white bands, exactly one yellow
+        interrupt per page. Yellow is never body text on dark. Every animation respects
+        prefers-reduced-motion. Keep the React tokens and the kit's <DocCode>tokens.css</DocCode>{' '}
+        in sync.
+      </DocP>
+    </>
+  ),
+};
+
 const overview: DocEntry = {
   slug: 'overview',
   name: 'Overview',
@@ -270,6 +390,11 @@ const typography: DocEntry = {
 <Heading level={2}>Heading level 2</Heading>
 <Heading level={3}>Heading level 3</Heading>
 <Heading level={4}>Heading level 4</Heading>`,
+      codeHtml: `<!-- headings are styled by base.css — just use the tags -->
+<h1>Heading level 1</h1>
+<h2>Heading level 2</h2>
+<h3>Heading level 3</h3>
+<h4>Heading level 4</h4>`,
     },
     {
       title: 'Text',
@@ -307,6 +432,10 @@ const typography: DocEntry = {
 <Heading level={3}>
   Ship with a <Highlight>senior team</Highlight> in days.
 </Heading>`,
+      codeHtml: `<p class="section-label">01 — Process</p>
+<p class="eyebrow">How it works</p>
+<h3>Ship with a <em>senior team</em> in days.</h3>
+<!-- <em> is repurposed as the inline yellow highlight -->`,
     },
   ],
 };
@@ -335,6 +464,17 @@ const badge: DocEntry = {
 <Badge variant="secondary">Secondary</Badge>
 <Badge variant="outline">Outline</Badge>
 <Badge variant="muted">Muted</Badge>`,
+      codeHtml: `<!-- The kit has no badge class; this is the minimal CSS+HTML -->
+<style>
+  .badge { display:inline-flex; align-items:center; border-radius:var(--radius-sm);
+    padding:.25rem .625rem; font-size:var(--text-xs); font-weight:500; line-height:1; }
+  .badge--default   { background:var(--color-primary); color:var(--color-bg); }
+  .badge--secondary { background:var(--color-surface-2); color:var(--color-text); }
+  .badge--outline   { border:1px solid var(--color-border); color:var(--color-text); }
+</style>
+<span class="badge badge--default">Default</span>
+<span class="badge badge--secondary">Secondary</span>
+<span class="badge badge--outline">Outline</span>`,
     },
     {
       title: 'Sizes',
@@ -372,6 +512,11 @@ const button: DocEntry = {
       ),
       code: `<Button>Book a call</Button>
 <Button variant="secondary">See how we work</Button>`,
+      codeHtml: `<!-- byte_design_kit classes (tokens.css + base.css + components.css) -->
+<a class="btn btn-primary" href="#book">Book a call</a>
+<a class="btn btn-secondary" href="#work">See how we work</a>
+
+<!-- sizes: add .btn-sm · full width: add .btn-full -->`,
     },
     {
       title: 'Sizes & full width',
@@ -426,6 +571,11 @@ const icon: DocEntry = {
 <Icon icon="mdi:brain" className="text-3xl text-primary" />
 <Icon icon="mdi:shield-check-outline" className="text-4xl text-primary" />
 <Icon icon="mdi:cash-multiple" className="text-4xl text-foreground" />`,
+      codeHtml: `<!-- load once: https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js -->
+<iconify-icon icon="mdi:rocket-launch-outline"
+  style="color:var(--color-primary);font-size:1.25rem"></iconify-icon>
+<iconify-icon icon="mdi:brain"
+  style="color:var(--color-primary);font-size:1.875rem"></iconify-icon>`,
     },
     {
       title: 'Brand logos',
@@ -465,6 +615,15 @@ const input: DocEntry = {
       code: `<Input placeholder="Jane Doe" />
 <Input type="email" placeholder="jane@company.com" />
 <Textarea placeholder="Tell us about your project…" />`,
+      codeHtml: `<div class="form-group">
+  <input type="text" placeholder="Jane Doe" />
+</div>
+<div class="form-group">
+  <input type="email" placeholder="jane@company.com" />
+</div>
+<div class="form-group">
+  <textarea placeholder="Tell us about your project…"></textarea>
+</div>`,
     },
     {
       title: 'States',
@@ -501,6 +660,10 @@ const label: DocEntry = {
       ),
       code: `<Label htmlFor="email">Work email</Label>
 <Input id="email" type="email" placeholder="jane@company.com" />`,
+      codeHtml: `<div class="form-group">
+  <label for="email">Work email</label>
+  <input id="email" type="email" placeholder="jane@company.com" />
+</div>`,
     },
   ],
 };
@@ -537,6 +700,9 @@ const separator: DocEntry = {
       ),
       code: `<Separator />
 <Separator orientation="vertical" />`,
+      codeHtml: `<div style="height:1px;background:var(--color-border)"></div>
+<!-- vertical -->
+<div style="width:1px;align-self:stretch;background:var(--color-border)"></div>`,
     },
   ],
 };
@@ -568,6 +734,8 @@ const container: DocEntry = {
       ),
       code: `<Container>…</Container>
 <Container narrow>…</Container>`,
+      codeHtml: `<div class="container">…</div>
+<!-- narrow reading width: wrap in a max-width:760px style -->`,
     },
   ],
 };
@@ -603,6 +771,9 @@ const section: DocEntry = {
       code: `<Section tone="dark">…</Section>
 <Section tone="light">…</Section>
 <Section tone="brand">…</Section>`,
+      codeHtml: `<section>…</section>                    <!-- dark base -->
+<section class="section--light">…</section>   <!-- off-white band -->
+<section class="section--brand">…</section>   <!-- one yellow interrupt -->`,
     },
   ],
 };
@@ -655,6 +826,18 @@ const card: DocEntry = {
   <CardTitle>Ship faster</CardTitle>
   <CardDescription>Senior, architect-reviewed delivery.</CardDescription>
 </Card>`,
+      codeHtml: `<div class="card">
+  <span class="card-icon"><iconify-icon icon="mdi:account-group-outline"></iconify-icon></span>
+  <h3>In your stack</h3>
+  <p>Engineers who slot into your tools and ship from week one.</p>
+</div>
+
+<!-- signature invert-on-hover: add .card--invert -->
+<div class="card card--invert">
+  <span class="card-icon"><iconify-icon icon="mdi:rocket-launch-outline"></iconify-icon></span>
+  <h3>Ship faster</h3>
+  <p>Senior, architect-reviewed delivery.</p>
+</div>`,
     },
   ],
 };
@@ -697,6 +880,18 @@ const formField: DocEntry = {
 </FormField>
 
 <Button full>Book a discovery call</Button>`,
+      codeHtml: `<form class="contact-form">
+  <div class="form-group">
+    <label for="name">Name *</label>
+    <input id="name" type="text" placeholder="Jane Doe" />
+  </div>
+  <div class="form-group">
+    <label for="email">Work email</label>
+    <input id="email" type="email" placeholder="jane@company.com" />
+    <p class="form-microcopy">We'll only use this to reply.</p>
+  </div>
+  <button class="btn btn-primary btn-full" type="submit">Book a discovery call</button>
+</form>`,
     },
     {
       title: 'Error state',
@@ -758,6 +953,18 @@ const projectCard: DocEntry = {
   title="Multotec"
   blurb="A predictive-maintenance platform turning raw sensor data into decisions."
 />`,
+      codeHtml: `<!-- kit class: .work-feature (needs work.css) -->
+<a class="work-feature" href="/work/multotec">
+  <img class="work-feature__img" src="/img/multotec.jpg" alt="Multotec" />
+  <div class="work-feature__overlay">
+    <p class="case-industry">IIoT · Industrial Mining</p>
+    <h3>Multotec</h3>
+    <div class="work-feature__reveal">
+      <p class="work-blurb">A predictive-maintenance platform turning raw sensor data into decisions.</p>
+      <span class="work-link">Read case study →</span>
+    </div>
+  </div>
+</a>`,
     },
     {
       title: 'Featured (full width)',
@@ -824,6 +1031,21 @@ const timeline: DocEntry = {
   <TimelineStep number={3} title="Growth"
     description="Ancestry.com API, payments, and an AI chatbot." />
 </Timeline>`,
+      codeHtml: `<!-- kit class: .arch-flow (needs work.css) -->
+<ol class="arch-flow">
+  <li class="arch-step">
+    <span class="arch-step__n">1</span>
+    <div><h4>Stabilization</h4><p>Harden the Flutter client and Laravel API.</p></div>
+  </li>
+  <li class="arch-step">
+    <span class="arch-step__n">2</span>
+    <div><h4>Deployment</h4><p>Ship to the App Store and Play Store.</p></div>
+  </li>
+  <li class="arch-step">
+    <span class="arch-step__n">3</span>
+    <div><h4>Growth</h4><p>Ancestry.com API, payments, an AI chatbot.</p></div>
+  </li>
+</ol>`,
     },
     {
       title: 'Icon nodes',
@@ -898,6 +1120,19 @@ const carousel: DocEntry = {
   </Card>
   {/* …more slides */}
 </Carousel>`,
+      codeHtml: `<!-- kit: .steps-carousel--slide, driven by animations.js (module D) -->
+<div class="steps steps-carousel steps-carousel--slide" id="hl-carousel">
+  <div class="steps-viewport"><div class="steps-track">
+    <div class="step is-active">
+      <span class="card-icon"><iconify-icon icon="mdi:account-group-outline"></iconify-icon></span>
+      <h3>In your stack</h3><p>Engineers who slot into your tools.</p>
+    </div>
+    <!-- …more .step slides -->
+  </div></div>
+  <div class="steps-nav"><div class="steps-dots" role="tablist">
+    <button class="steps-dot is-active" data-step="0"></button>
+  </div></div>
+</div>`,
     },
   ],
 };
@@ -923,6 +1158,12 @@ const dottedMesh: DocEntry = {
       code: `<DottedMesh variant="dots-light" speed="fast" gap={28} animated>
   {/* your content sits above the drifting grid */}
 </DottedMesh>`,
+      codeHtml: `<!-- kit class: .section-mesh (mesh-wave keyframe lives in components.css) -->
+<section class="section-mesh">
+  <div class="container">
+    <!-- your content -->
+  </div>
+</section>`,
     },
   ],
 };
@@ -947,6 +1188,11 @@ const icosahedron: DocEntry = {
   {/* anything sits pinned at the centre */}
   <img src="/logo.svg" alt="ByteNana" />
 </Icosahedron>`,
+      codeHtml: `<!-- kit: canvas globe, data-shape="ico", driven by animations.js -->
+<div class="cta-hub" data-globe data-shape="ico" data-radius="0.40">
+  <canvas class="cta-hub__links" aria-hidden="true"></canvas>
+  <div class="hero-hub__logo"><img src="/logo.svg" alt="ByteNana" /></div>
+</div>`,
     },
   ],
 };
@@ -954,9 +1200,11 @@ const icosahedron: DocEntry = {
 /* ------------------------------------------------------------------ Assembly */
 
 export const registry: DocEntry[] = [
-  // Components
+  // Design System
   overview,
   gettingStarted,
+  cssJs,
+  skillPage,
   typography,
   badge,
   button,
