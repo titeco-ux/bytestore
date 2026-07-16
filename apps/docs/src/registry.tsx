@@ -1396,7 +1396,7 @@ export const registry: DocEntry[] = [
 ];
 
 /** Sidebar drawer order. */
-export const drawerOrder: Drawer[] = ['Design System', 'All Components'];
+export const drawerOrder: Drawer[] = ['All Components', 'Design System'];
 
 /** Category order within a drawer. */
 export const categoryOrder: Category[] = [
