@@ -2075,7 +2075,7 @@ const TESTIMONIALS = [
 
 function TestimonialCard({ t }: { t: (typeof TESTIMONIALS)[number] }) {
   return (
-    <div className="flex flex-col rounded-lg border border-border bg-surface p-6">
+    <div className="flex h-full flex-col rounded-lg border border-border bg-surface p-6 transition-colors duration-fast ease-byte hover:border-primary">
       <div className="flex items-center gap-3">
         <img
           src={t.avatar}
@@ -2093,6 +2093,22 @@ function TestimonialCard({ t }: { t: (typeof TESTIMONIALS)[number] }) {
   );
 }
 
+/** Continuous right-moving marquee of testimonial cards; pauses on hover. */
+function TestimonialMarquee() {
+  const items = [...TESTIMONIALS, ...TESTIMONIALS];
+  return (
+    <div className="group relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)]">
+      <div className="flex w-max gap-4 py-1 animate-marquee-right group-hover:[animation-play-state:paused]">
+        {items.map((t, i) => (
+          <div key={i} className="w-[300px] shrink-0" aria-hidden={i >= TESTIMONIALS.length}>
+            <TestimonialCard t={t} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const testimonialCarousel: DocEntry = {
   slug: 'testimonial-carousel',
   name: 'Testimonial',
@@ -2101,105 +2117,100 @@ const testimonialCarousel: DocEntry = {
   hidden: true,
   status: 'new',
   description:
-    'A testimonial card — a person photo with a name and subtitle on top, and a short quote under it. Shown four-up in a carousel (dots + swipe, no arrows) that pages through the testimonials.',
-  importLine: "import { Carousel } from '@bytenana/ui';",
+    'A testimonial card — a person photo with a name and subtitle on top, and a short quote under it — in a row that scrolls continuously to the right. Hover any card and the row stops and that card gets a yellow border.',
+  importLine: "import { Icon } from '@bytenana/ui';",
   demos: [
     {
-      title: 'Four-up testimonial carousel',
-      description: 'Four cards per view; the dots page through. Hover to pause; swipe works too.',
-      render: () => {
-        const pages = [TESTIMONIALS.slice(0, 4), TESTIMONIALS.slice(4, 8)];
-        return (
-          <Carousel className="w-full" aria-label="Testimonials" showArrows={false}>
-            {pages.map((group, i) => (
-              <div
-                key={i}
-                className="grid grid-cols-1 gap-4 px-1 pb-2 sm:grid-cols-2 lg:grid-cols-4"
-              >
-                {group.map((t) => (
-                  <TestimonialCard key={t.name} t={t} />
-                ))}
-              </div>
-            ))}
-          </Carousel>
-        );
-      },
-      code: `const testimonials = [ /* { name, role, quote, avatar } … 8 people */ ];
-const pages = [testimonials.slice(0, 4), testimonials.slice(4, 8)];
+      title: 'Auto-scrolling testimonials',
+      description:
+        'The row drifts right on its own. Hover a card: the motion pauses and the card takes a yellow border.',
+      flush: true,
+      render: () => (
+        <div className="w-full px-6 py-10">
+          <TestimonialMarquee />
+        </div>
+      ),
+      code: `const testimonials = [ /* { name, role, quote, avatar } … */ ];
 
-<Carousel aria-label="Testimonials" showArrows={false}>
-  {pages.map((group, i) => (
-    <div key={i} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {group.map((t) => (
-        <div key={t.name} className="flex flex-col rounded-lg border border-border bg-surface p-6">
-          <div className="flex items-center gap-3">
-            <img src={t.avatar} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover" />
-            <div>
-              <p className="font-heading text-sm font-bold text-foreground">{t.name}</p>
-              <p className="text-xs text-muted">{t.role}</p>
+function TestimonialMarquee() {
+  // duplicate the list so the loop is seamless
+  const items = [...testimonials, ...testimonials];
+  return (
+    <div className="group relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)]">
+      {/* animate-marquee-right = translateX(-50%) -> 0, 32s linear infinite */}
+      <div className="flex w-max gap-4 animate-marquee-right group-hover:[animation-play-state:paused]">
+        {items.map((t, i) => (
+          <div key={i} className="w-[300px] shrink-0">
+            <div className="flex h-full flex-col rounded-lg border border-border bg-surface p-6 transition-colors hover:border-primary">
+              <div className="flex items-center gap-3">
+                <img src={t.avatar} alt="" className="h-10 w-10 rounded-full object-cover" />
+                <div>
+                  <p className="font-heading text-sm font-bold text-foreground">{t.name}</p>
+                  <p className="text-xs text-muted">{t.role}</p>
+                </div>
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-muted">{t.quote}</p>
             </div>
           </div>
-          <p className="mt-4 text-sm leading-relaxed text-muted">{t.quote}</p>
-        </div>
-      ))}
-    </div>
-  ))}
-</Carousel>`,
-      codeHtml: `<!-- 4 cards per slide in a .steps-carousel (animations.js module D); dots only -->
-<div class="steps steps-carousel steps-carousel--slide" id="tst-carousel">
-  <div class="steps-viewport"><div class="steps-track">
-    <div class="step is-active">
-      <div class="card-grid card-grid--2-4">
-        <div class="card">
-          <div style="display:flex;align-items:center;gap:12px">
-            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""
-              style="width:40px;height:40px;border-radius:9999px;object-fit:cover" />
-            <div>
-              <p style="font-family:var(--font-heading);font-weight:700">Sarah Chen</p>
-              <p style="font-size:var(--text-xs);color:var(--color-text-muted)">CEO · Series-A</p>
-            </div>
-          </div>
-          <p style="margin-top:1rem;font-size:var(--text-sm);color:var(--color-text-muted)">They felt like part of our team.</p>
-        </div>
-        <!-- 3 more .card items to fill the row of 4 -->
+        ))}
       </div>
     </div>
-    <!-- one .step per page of 4 -->
-  </div></div>
-  <div class="steps-nav"><div class="steps-dots" role="tablist">
-    <button class="steps-dot is-active" data-step="0"></button>
-  </div></div>
+  );
+}`,
+      codeHtml: `<!-- reuse the kit's marquee (.trust-track scroll), pausing on hover -->
+<style>
+  @keyframes marquee-right { from { transform: translateX(-50%) } to { transform: translateX(0) } }
+  .tst-track { display:flex; gap:16px; width:max-content; animation: marquee-right 32s linear infinite; }
+  .tst-marquee:hover .tst-track { animation-play-state: paused; }
+  .tst-item { width:300px; flex:0 0 auto; }
+  .tst-item .card { height:100%; transition:border-color .2s var(--ease-out); }
+  .tst-item .card:hover { border-color: var(--color-primary); }
+</style>
+<div class="tst-marquee" style="overflow:hidden">
+  <div class="tst-track">
+    <!-- render each testimonial twice for a seamless loop -->
+    <div class="tst-item">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""
+            style="width:40px;height:40px;border-radius:9999px;object-fit:cover" />
+          <div>
+            <p style="font-family:var(--font-heading);font-weight:700">Sarah Chen</p>
+            <p style="font-size:var(--text-xs);color:var(--color-text-muted)">CEO · Series-A</p>
+          </div>
+        </div>
+        <p style="margin-top:1rem;font-size:var(--text-sm);color:var(--color-text-muted)">They felt like part of our team.</p>
+      </div>
+    </div>
+    <!-- … more .tst-item, then the whole set duplicated … -->
+  </div>
 </div>`,
-      codePrompt: `Build a self-contained testimonial carousel that shows FOUR cards per view.
-Assume no design system or framework — specify everything inline. React or
-HTML/CSS/JS.
+      codePrompt: `Build a self-contained, auto-scrolling testimonials row (a marquee). Assume no
+design system or framework — specify everything inline. React or HTML/CSS/JS.
 
-TESTIMONIAL CARD
-- Background #161A1C, 1px border rgba(255,255,255,0.08), radius 16px, padding 24px.
-  On a dark #0F1112 page.
-- Header row (avatar + text, center-aligned, 12px gap):
-  - Avatar: a 40px circular PHOTO (object-fit: cover, border-radius 50%). Use a
-    real person photo (e.g. from randomuser.me or your own).
-  - To its right: name ("IBM Plex Sans" 700, 14px, #FCFCFC) and, under it, a
-    role/subtitle ("Inter" 12px, rgba(252,252,252,0.55)).
+TESTIMONIAL CARD (fixed width ~300px)
+- Background #161A1C, 1px border rgba(255,255,255,0.08), radius 16px, padding 24px,
+  full height. On a dark #0F1112 page.
+- Header row (center-aligned, 12px gap): a 40px circular PHOTO (object-fit cover)
+  + the person's name ("IBM Plex Sans" 700, 14px, #FCFCFC) with a role/subtitle
+  under it ("Inter" 12px, rgba(252,252,252,0.55)).
 - Below (16px gap): a short quote ("Inter" 14px, line-height 1.6,
   rgba(252,252,252,0.55)).
 
-CAROUSEL (four-up, paged)
-- Show FOUR cards at once in a responsive grid: 4 columns on desktop, 2 on
-  tablet, 1 on mobile, 16px gap. Group the testimonials into pages of four and
-  slide between pages.
-- Navigation: DOT navigation only — NO arrow buttons. Active dot widens to amber
-  #F2B705. Support swipe and Left/Right arrow keys. Auto-advance every ~4.5s,
-  pausing on hover/focus.
-- Accessible: role="group" aria-roledescription="carousel"; hide off-screen
-  pages from assistive tech. Slide transition ~500ms, easing
-  cubic-bezier(0.22, 1, 0.36, 1).
+MARQUEE
+- Lay the cards in a horizontal row (16px gap) and scroll the whole row
+  continuously to the RIGHT. Duplicate the card list once so the loop is
+  seamless, and animate the track from translateX(-50%) to translateX(0),
+  ~32s linear infinite.
+- Clip the row (overflow hidden); optionally fade both edges with a horizontal
+  mask.
+- ON HOVER of the row: pause the animation (animation-play-state: paused).
+- ON HOVER of a card: its border turns amber #F2B705 (transition border-color
+  ~200ms, easing cubic-bezier(0.22, 1, 0.36, 1)).
 
 RULES
-- Amber #F2B705 is the only accent (active dot). 8-pt spacing. Respect
-  prefers-reduced-motion (no autoplay, instant slide). Load fonts IBM Plex Sans
-  700 and Inter 400.`,
+- Amber #F2B705 is the only accent. 8-pt spacing. Load fonts IBM Plex Sans 700
+  and Inter 400.`,
     },
   ],
 };
@@ -2278,7 +2289,7 @@ const cards: DocEntry = {
         </div>
       </GalleryThumb>
 
-      <GalleryThumb href="#/testimonial-carousel" name="Testimonial" meta="avatar + quote carousel">
+      <GalleryThumb href="#/testimonial-carousel" name="Testimonial" meta="auto-scrolling row">
         <div className="pointer-events-none w-[420px] shrink-0 scale-[0.72]">
           <TestimonialCard t={TESTIMONIALS[0]} />
         </div>

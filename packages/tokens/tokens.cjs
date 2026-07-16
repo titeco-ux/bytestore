@@ -107,11 +107,17 @@ const keyframes = {
     '0%, 100%': { transform: 'scale(1)' },
     '50%': { transform: 'scale(1.06)' },
   },
+  // Continuous horizontal marquee moving to the right (needs a 2x-duplicated track).
+  'marquee-right': {
+    from: { transform: 'translateX(-50%)' },
+    to: { transform: 'translateX(0)' },
+  },
 };
 
 const animation = {
   'mesh-wave': 'mesh-wave 14s ease-in-out infinite',
   'pulse-scale': 'pulse-scale 6s ease-in-out infinite',
+  'marquee-right': 'marquee-right 32s linear infinite',
 };
 
 module.exports = {
