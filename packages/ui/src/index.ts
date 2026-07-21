@@ -48,6 +48,12 @@ export {
   type TabProps,
   type TabPanelProps,
 } from './molecules/tabs';
+export {
+  Accordion,
+  AccordionItem,
+  type AccordionProps,
+  type AccordionItemProps,
+} from './molecules/accordion';
 
 /* --------------------------------------------------------------- Backgrounds */
 export { DottedMesh, type DottedMeshProps } from './backgrounds/dotted-mesh';

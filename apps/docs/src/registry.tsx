@@ -3,6 +3,8 @@ import { IcosahedronPlayground } from './playgrounds/IcosahedronPlayground';
 import { DottedMeshPlayground } from './playgrounds/DottedMeshPlayground';
 import { CodeBlock } from './components/CodeBlock';
 import {
+  Accordion,
+  AccordionItem,
   Badge,
   Button,
   cn,
@@ -1288,6 +1290,176 @@ rgba(255,255,255,0.08)); the selected box gets an amber border #F2B705 and a
   ],
 };
 
+const FAQ_ITEMS = [
+  {
+    value: 'engage',
+    q: 'Staff augmentation or a product team — which one do I need?',
+    a: 'If you have a roadmap and a team but need more senior hands in your stack, that’s staff augmentation — our engineers embed in your standups and sprints, and you direct the work. If you have a vision but no team to own it, that’s a product team — a self-managed pod takes it from discovery to launch.',
+  },
+  {
+    value: 'timezone',
+    q: 'How does working with a Brazil-based team actually work day-to-day?',
+    a: 'Brazil sits in full overlap with US business hours. Your engineers are in your standups live, replying in real time — not handing off work twelve hours behind like traditional offshore. Same tools, same repo, same day.',
+  },
+  {
+    value: 'cost',
+    q: 'What does it cost?',
+    a: 'Embedded engineers start around $32/hr; senior and architect-level engineers run $50–60/hr. A senior ByteNana engineer lands near ~$100k/yr all-in versus ~$195k for a comparable US hire — roughly half, with no recruiter fee, benefits, or payroll overhead.',
+  },
+  {
+    value: 'seniority',
+    q: 'How senior are your engineers, really?',
+    a: 'Every engineer has 5+ years shipping production software, C1-level client-facing English, and passes our technical assessment before touching your repo. They’re architecture-capable — consultants first, coders second.',
+  },
+];
+
+const accordion: DocEntry = {
+  slug: 'accordion',
+  name: 'Accordion',
+  category: 'Molecules',
+  status: 'new',
+  description:
+    'An accessible disclosure list — the FAQ pattern. Each header is a real button (aria-expanded / aria-controls) over a labelled region; the panel height animates open and the ± marker rotates. type="single" keeps one panel open (collapsible), type="multiple" allows many. Up/Down/Home/End move between headers.',
+  importLine: "import { Accordion, AccordionItem } from '@bytenana/ui';",
+  demos: [
+    {
+      title: 'FAQ (single, collapsible)',
+      description:
+        'One panel open at a time. Click a question — the panel expands and the + turns to a –. Use ↑ ↓ to move between questions.',
+      render: () => (
+        <Accordion type="single" defaultValue="engage" className="w-full max-w-2xl">
+          {FAQ_ITEMS.map((f) => (
+            <AccordionItem key={f.value} value={f.value} title={f.q}>
+              {f.a}
+            </AccordionItem>
+          ))}
+        </Accordion>
+      ),
+      code: `<Accordion type="single" defaultValue="engage">
+  <AccordionItem value="engage" title="Staff augmentation or a product team — which one do I need?">
+    If you have a roadmap and a team but need more senior hands in your stack,
+    that's staff augmentation. If you have a vision but no team to own it, that's
+    a product team — a self-managed pod that takes it from discovery to launch.
+  </AccordionItem>
+  <AccordionItem value="timezone" title="How does working with a Brazil-based team work?">
+    Brazil sits in full overlap with US business hours — same tools, same repo,
+    same day, not async hand-offs twelve hours behind.
+  </AccordionItem>
+  <AccordionItem value="cost" title="What does it cost?">
+    Embedded engineers from $32/hr; senior/architect $50–60/hr — roughly half a
+    comparable US hire, with no recruiter fee or payroll overhead.
+  </AccordionItem>
+</Accordion>`,
+      codeHtml: `<!-- Framework-free: native <details> accordion (byte_design_kit) -->
+<div class="faq-list">
+  <details class="faq-item" open>
+    <summary class="faq-q">
+      Staff augmentation or a product team — which one do I need?
+      <span class="faq-icon" aria-hidden="true"></span>
+    </summary>
+    <div class="faq-a"><p>If you have a roadmap and a team but need more senior
+      hands in your stack, that's staff augmentation. If you have a vision but no
+      team to own it, that's a product team.</p></div>
+  </details>
+
+  <details class="faq-item">
+    <summary class="faq-q">
+      What does it cost?
+      <span class="faq-icon" aria-hidden="true"></span>
+    </summary>
+    <div class="faq-a"><p>Embedded engineers from $32/hr; senior/architect
+      $50–60/hr — roughly half a comparable US hire.</p></div>
+  </details>
+</div>
+
+<style>
+  .faq-item { background: var(--color-surface-2); border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); overflow: hidden; }
+  .faq-item[open] { border-color: var(--color-border-hover); background: var(--color-surface-3); }
+  .faq-q { display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 1.5rem; cursor: pointer; list-style: none;
+    font-family: var(--font-heading); font-weight: 600; color: var(--color-text); }
+  .faq-q::-webkit-details-marker { display: none; }
+  .faq-a { padding: 0 1.5rem 1.25rem; color: var(--color-text-muted); }
+  /* ± marker: two amber bars, the vertical one fades when open */
+  .faq-icon { position: relative; width: 18px; height: 18px; flex: 0 0 auto; }
+  .faq-icon::before, .faq-icon::after { content: ""; position: absolute; top: 50%; left: 50%;
+    width: 14px; height: 2px; border-radius: 2px; background: var(--color-primary);
+    transform: translate(-50%, -50%); transition: transform .25s var(--ease-out), opacity .25s var(--ease-out); }
+  .faq-icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+  .faq-item[open] .faq-icon::after { transform: translate(-50%, -50%); opacity: 0; }
+</style>`,
+      codePrompt: `Build a self-contained, accessible Accordion (disclosure list / FAQ). Assume no
+design system or framework — specify everything inline. React or plain HTML/CSS/JS.
+
+STRUCTURE
+- A vertical list of items (8px gap). Each item = a header button over a
+  collapsible panel. The header is a real <button> with aria-expanded and
+  aria-controls -> the panel id; the panel has role="region" and
+  aria-labelledby -> the header id. Wrap the button text in an <h3> for outline.
+- Support two modes: "single" (opening one panel closes the others; collapsible
+  so all can be closed) and "multiple" (each toggles independently).
+
+KEYBOARD / FOCUS
+- Enter/Space toggles the focused header (native button behaviour).
+- ArrowDown/ArrowUp move focus between headers (wrapping); Home/End jump to
+  first/last. Visible focus ring: 2px amber outline, offset -2px.
+
+STYLE (on a dark #0F1112 page)
+- Item: background #1E2325, 1px border rgba(255,255,255,0.08), radius 16px,
+  overflow hidden. When open (or hovered): border rgba(242,183,5,0.35); when
+  open also background #252A2D.
+- Header: full width, space-between, padding 20px 24px, "IBM Plex Sans" 600,
+  18px, #FCFCFC. Right side holds a ± marker.
+- ± marker (18px box): two 14x2px amber #F2B705 bars crossed into a plus; when
+  the item opens, the vertical bar rotates to horizontal and fades out, leaving
+  a minus. Transition ~250ms, easing cubic-bezier(0.22, 1, 0.36, 1).
+- Panel body: "Inter" 16px, line-height 1.65, rgba(252,252,252,0.55), padding
+  0 24px 20px.
+
+OPEN/CLOSE ANIMATION
+- Animate the panel height smoothly (e.g. the CSS grid-template-rows 0fr->1fr
+  trick, or max-height). Respect prefers-reduced-motion: snap open with no
+  height/marker transition.
+
+RULES
+- Amber #F2B705 is the only accent (the marker). 8-pt spacing. Load fonts
+  IBM Plex Sans 600 and Inter 400.`,
+    },
+    {
+      title: 'Multiple (independent panels)',
+      description: 'type="multiple" lets several panels stay open at once; each toggles on its own.',
+      render: () => (
+        <Accordion type="multiple" defaultValue={['a']} className="w-full max-w-2xl">
+          <AccordionItem value="a" title="Who owns the code and IP?">
+            You do — fully. All work product, code, and IP belong to you, and we’ll sign your NDA
+            and MSA.
+          </AccordionItem>
+          <AccordionItem value="b" title="How fast can someone start?">
+            Most engagements begin with a short matching call, and engineers are onboarded into your
+            repo and tools within days.
+          </AccordionItem>
+          <AccordionItem value="c" title="Can I scale the team up or down?">
+            Yes — staff augmentation is month-to-month or committed, so you add or drop engineers as
+            projects flex without breaking delivery.
+          </AccordionItem>
+        </Accordion>
+      ),
+      code: `<Accordion type="multiple" defaultValue={['a']}>
+  <AccordionItem value="a" title="Who owns the code and IP?">
+    You do — fully. We'll sign your NDA and MSA.
+  </AccordionItem>
+  <AccordionItem value="b" title="How fast can someone start?">
+    A short matching call, then onboarded into your repo within days.
+  </AccordionItem>
+  <AccordionItem value="c" title="Can I scale the team up or down?">
+    Month-to-month or committed — flex the team without breaking delivery.
+  </AccordionItem>
+</Accordion>`,
+    },
+  ],
+};
+
 /* =============================================================== Backgrounds */
 
 const dottedMesh: DocEntry = {
@@ -2321,6 +2493,7 @@ export const registry: DocEntry[] = [
   timeline,
   carousel,
   tabs,
+  accordion,
   // Components (backgrounds), nested in Design System
   icosahedron,
   dottedMesh,
